@@ -19,15 +19,10 @@ package se.kth.app.mngr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.kth.app.*;
+import se.kth.app.broadcast.*;
 import se.kth.croupier.util.NoView;
-import se.kth.app.AppComp;
-import se.sics.kompics.Channel;
-import se.sics.kompics.Component;
-import se.sics.kompics.ComponentDefinition;
-import se.sics.kompics.Handler;
-import se.sics.kompics.Negative;
-import se.sics.kompics.Positive;
-import se.sics.kompics.Start;
+import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.timer.Timer;
 import se.sics.ktoolbox.croupier.CroupierPort;
@@ -54,6 +49,12 @@ public class AppMngrComp extends ComponentDefinition {
   private OverlayId croupierId;
   //***************************INTERNAL_STATE*********************************
   private Component appComp;
+  //our Components
+  private Component gbeb;
+  private Component rb;
+  private Component cb;
+  //TODO Add Additional Components
+
   //******************************AUX_STATE***********************************
   private OMngrCroupier.ConnectRequest pendingCroupierConnReq;
   //**************************************************************************
@@ -91,10 +92,33 @@ public class AppMngrComp extends ComponentDefinition {
   };
 
   private void connectAppComp() {
+
     appComp = create(AppComp.class, new AppComp.Init(selfAdr, croupierId));
+    gbeb = create(GBEB.class, new GBEB.Init(selfAdr));
+    rb = create(RB.class, new RB.Init(selfAdr));
+    cb = create(CB.class, new CB.Init(selfAdr));
+
+
     connect(appComp.getNegative(Timer.class), extPorts.timerPort, Channel.TWO_WAY);
     connect(appComp.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
     connect(appComp.getNegative(CroupierPort.class), extPorts.croupierPort, Channel.TWO_WAY);
+
+    //GBEB
+    connect(gbeb.getPositive(GBEBPort.class), appComp.getNegative(GBEBPort.class), Channel.TWO_WAY);
+    connect(gbeb.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
+    connect(gbeb.getNegative(CroupierPort.class), extPorts.croupierPort, Channel.TWO_WAY);
+    trigger(Start.event, gbeb.control());
+
+    //RB
+    connect(rb.getNegative(GBEBPort.class), gbeb.getPositive(GBEBPort.class), Channel.TWO_WAY);
+    trigger(Start.event, rb.control());
+
+    //CB
+    connect(cb.getPositive(CBPort.class), appComp.getNegative(CBPort.class), Channel.TWO_WAY);
+    connect(cb.getNegative(RBPort.class), rb.getPositive(RBPort.class), Channel.TWO_WAY);
+    trigger(Start.event, cb.control());
+    //TODO Connect cb
+
   }
 
   public static class Init extends se.sics.kompics.Init<AppMngrComp> {
