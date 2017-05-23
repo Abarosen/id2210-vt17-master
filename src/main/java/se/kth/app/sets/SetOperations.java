@@ -53,11 +53,16 @@ public class SetOperations {
         }
     }
 
-    static class InternalRemove implements KompicsEvent{
+    static class InternalOperation implements KompicsEvent{
         String value;
-        InternalRemove(String value){
+        OpType type;
+        InternalOperation(OpType type, String value){
             this.value = value;
+            this.type = type;
         }
+    }
+    public static enum OpType {
+        Remove, Add;
     }
 
 }

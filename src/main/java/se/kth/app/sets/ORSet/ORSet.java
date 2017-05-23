@@ -22,21 +22,21 @@ public class ORSet extends ComponentDefinition {
     Map<String,Set<UUID>> set;
 
 
-    ORSet(){
+    public ORSet(){
         set = new HashMap<>();
 
         subscribe(handleExternalAdd, app);
         subscribe(handleExternalRemove, app);
         subscribe(handleExternalLookup, app);
 
-        subscribe(handleInternalAdd, cb);
-        subscribe(handleInternalRemove, cb);
+        subscribe(handleInternal, cb);
+        subscribe(handleInternal, cb);
     }
 
     Handler handleExternalAdd = new Handler<ORSetOperations.Add>() {
         @Override
         public void handle(ORSetOperations.Add event) {
-            trigger(new CB.CB_Broadcast(new ORSetOperations.InternalAdd(event.value, UUID.randomUUID())), cb);
+            trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, UUID.randomUUID())), cb);
         }
     };
 
@@ -57,33 +57,40 @@ public class ORSet extends ComponentDefinition {
             Set<UUID> temp = set.get(event.value);
             if(temp == null || temp.isEmpty())
                 return;
-            
-            trigger(new CB.CB_Broadcast(new ORSetOperations.InternalRemove(event.value, temp)), cb);
+
+            trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, temp)), cb);
         }
     };
 
-
-    Handler handleInternalAdd = new Handler<ORSetOperations.InternalAdd>() {
+    Handler handleInternal = new Handler<CB.CB_Deliver>() {
         @Override
-        public void handle(ORSetOperations.InternalAdd event) {
-            Set<UUID> temp = set.get(event.value);
-            if(temp == null){
-                temp = new HashSet<UUID>();
-                temp.add(event.id);
-                set.put(event.value, temp);
-            }else{
-                temp.add(event.id);
-            }
+        public void handle(CB.CB_Deliver event) {
+
+            ORSetOperations.InternalOperation temp;
+            Set<UUID> tempset;
+            try{
+                temp = (ORSetOperations.InternalOperation) event.getContent();
+
+                if(temp.type.equals(ORSetOperations.OpType.Add)) {
+                    //Add
+                    tempset = set.get(temp.value);
+                    if(tempset == null){
+                        tempset = new HashSet<UUID>();
+                        tempset.add(temp.id);
+                        set.put(temp.value, tempset);
+                    }else{
+                        tempset.add(temp.id);
+                    }
+                }else if(temp.type.equals(ORSetOperations.OpType.Remove)) {
+                    //Remove
+                    tempset = set.get(temp.value);
+                    if(tempset == null)
+                        return;
+                    tempset.removeAll(temp.ids);
+                }
+            }catch(ClassCastException  e){}
         }
     };
 
-    Handler handleInternalRemove = new Handler<ORSetOperations.InternalRemove>() {
-        @Override
-        public void handle(ORSetOperations.InternalRemove event) {
-            Set<UUID> temp = set.get(event.value);
-            if(temp == null)
-                return;
-            temp.removeAll(event.id);
-        }
-    };
+
 }

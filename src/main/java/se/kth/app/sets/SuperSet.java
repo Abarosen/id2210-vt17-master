@@ -20,7 +20,7 @@ public class SuperSet extends ComponentDefinition{
 
     Set<String> storage;
 
-    SuperSet(){
+    public SuperSet(){
         storage = new HashSet<>();
 
         subscribe(handleExternalAdd, app);
@@ -30,14 +30,14 @@ public class SuperSet extends ComponentDefinition{
     Handler handleExternalAdd = new Handler<SetOperations.Add>() {
         @Override
         public void handle(SetOperations.Add event) {
-            trigger(new CB.CB_Broadcast(new SetOperations.InternalAdd(event.value)), cb);
+            trigger(new CB.CB_Broadcast(new SetOperations.InternalOperation(SetOperations.OpType.Add, event.value)), cb);
         }
     };
 
     Handler handleExternalRemove = new Handler<SetOperations.Remove>() {
         @Override
         public void handle(SetOperations.Remove event) {
-            trigger(new CB.CB_Broadcast(new SetOperations.InternalRemove(event.value)), cb);
+            trigger(new CB.CB_Broadcast(new SetOperations.InternalOperation(SetOperations.OpType.Remove, event.value)), cb);
         }
     };
 

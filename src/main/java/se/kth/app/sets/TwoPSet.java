@@ -1,5 +1,6 @@
 package se.kth.app.sets;
 
+import se.kth.app.broadcast.CB;
 import se.sics.kompics.*;
 
 import java.util.HashSet;
@@ -12,33 +13,32 @@ public class TwoPSet extends SuperSet{
 
     private Set<String> tombstones;
 
-    TwoPSet(){
+    public TwoPSet(){
         super();
         tombstones = new HashSet<>();
         subscribe(handleLookup, app);
-        subscribe(handleAdd, cb);
-        subscribe(handleRemove, cb);
+        subscribe(handleInternal, cb);
     }
 
-
-    //Add
-    Handler handleAdd = new Handler<SetOperations.InternalAdd>() {
+    Handler handleInternal = new Handler<CB.CB_Deliver>() {
         @Override
-        public void handle(SetOperations.InternalAdd event) {
-            storage.add(event.value);
-
+        public void handle(CB.CB_Deliver event) {
+            SetOperations.InternalOperation temp;
+            try{
+                temp = (SetOperations.InternalOperation) event.getContent();
+                if(temp.type.equals(SetOperations.OpType.Add)) {
+                    //Add
+                    storage.add(temp.value);
+                }else if(temp.type.equals(SetOperations.OpType.Remove)){
+                    //Remove
+                    if(storage.contains(temp.value)) {
+                        storage.add(temp.value);
+                    }
+                }
+            }catch(ClassCastException  e){}
         }
     };
 
-    //Remove
-    Handler handleRemove = new Handler<SetOperations.InternalRemove>() {
-        @Override
-        public void handle(SetOperations.InternalRemove event) {
-            if(storage.contains(event.value)) {
-                storage.add(event.value);
-            }
-        }
-    };
 
     //Lookup
     Handler handleLookup = new Handler<SetOperations.Lookup>() {

@@ -1,24 +1,38 @@
 package se.kth.app.sets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.kth.app.broadcast.CB;
 import se.sics.kompics.*;
 
 /**
  * Created by Barosen on 2017-05-18.
  */
 public class GSet extends SuperSet{
+    private static final Logger LOG = LoggerFactory.getLogger(GSet.class);
 
-    GSet(){
+    public GSet(){
         super();
-        subscribe(handleAdd, cb);
+        LOG.info("GSet started");
+
+        subscribe(handleInternal, cb);
         subscribe(handleLookup, app);
     }
 
-    //Add
-    Handler handleAdd = new Handler<SetOperations.InternalAdd>() {
-        @Override
-        public void handle(SetOperations.InternalAdd event) {
-            storage.add(event.value);
 
+    Handler handleInternal = new Handler<CB.CB_Deliver>() {
+        @Override
+        public void handle(CB.CB_Deliver event) {
+            SetOperations.InternalOperation temp;
+            try{
+                temp = (SetOperations.InternalOperation) event.getContent();
+                if(temp.type.equals(SetOperations.OpType.Add)) {
+                    //Add
+                    storage.add(temp.value);
+                }
+            }catch(ClassCastException  e){
+                LOG.debug("Got something strange");
+            }
         }
     };
 

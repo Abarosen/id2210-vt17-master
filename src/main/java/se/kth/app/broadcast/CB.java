@@ -115,13 +115,13 @@ public class CB extends ComponentDefinition {
                         trigger(new CB_Deliver(t.event), cb);
                         delivered.add(t.event);
 
-                        LOG.trace("{} Delivery Type 2, 1:{} 2:{}", logPrefix, x.event.hashCode(), t.event.hashCode());
+                        LOG.debug("{} Delivery Type 2, 1:{} 2:{}", logPrefix, x.event.hashCode(), t.event.hashCode());
                         if(!(past.contains(t))){
                             past.add(t);
                         }
                     }
                 }
-                LOG.info("{} Delivery Type 1!", logPrefix);
+                LOG.debug("{} Delivery Type 1!", logPrefix);
                 trigger(new CB_Deliver(x.event), cb);
                 delivered.add(x.event);
                 Tuple temp = new Tuple(x.addr, x.event);

@@ -49,23 +49,28 @@ static class Add implements KompicsEvent {
     /**************************************************/
 
     //Add
-    static class InternalAdd implements KompicsEvent{
+    static class InternalOperation implements KompicsEvent{
         String value;
         UUID id;
-        InternalAdd(String value, UUID id){
+        Set<UUID> ids;
+        OpType type;
+
+        InternalOperation(String value, UUID id){
+            //Add
+            this.type = OpType.Add;
             this.value = value;
             this.id = id;
         }
-    }
 
-    static class InternalRemove implements KompicsEvent{
-        String value;
-        Set<UUID> id;
-        InternalRemove(String value, Set<UUID> id){
+        InternalOperation(String value, Set<UUID> ids){
+            //Remove
+            this.type = OpType.Remove;
             this.value = value;
-            this.id = id;
+            this.ids = ids;
         }
     }
-
+    public static enum OpType {
+        Remove, Add;
+    }
 }
 

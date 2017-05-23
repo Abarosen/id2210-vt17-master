@@ -21,6 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.*;
 import se.kth.app.broadcast.*;
+import se.kth.app.sets.GSet;
+import se.kth.app.sets.ORSet.ORSet;
+import se.kth.app.sets.SuperSetPort;
+import se.kth.app.sets.TwoPSet;
 import se.kth.croupier.util.NoView;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
@@ -47,12 +51,14 @@ public class AppMngrComp extends ComponentDefinition {
   private ExtPort extPorts;
   private KAddress selfAdr;
   private OverlayId croupierId;
+  private int mode;
   //***************************INTERNAL_STATE*********************************
   private Component appComp;
   //our Components
   private Component gbeb;
   private Component rb;
   private Component cb;
+  private Component set;
   //TODO Add Additional Components
 
   //******************************AUX_STATE***********************************
@@ -61,11 +67,13 @@ public class AppMngrComp extends ComponentDefinition {
 
   public AppMngrComp(Init init) {
     selfAdr = init.selfAdr;
+
     logPrefix = "<nid:" + selfAdr.getId() + ">";
-    LOG.info("{}initiating...", logPrefix);
+    LOG.info("{}initiating...{}", logPrefix, mode);
 
     extPorts = init.extPorts;
     croupierId = init.croupierOId;
+    mode = init.mode;
 
     subscribe(handleStart, control);
     subscribe(handleCroupierConnected, omngrPort);
@@ -117,8 +125,27 @@ public class AppMngrComp extends ComponentDefinition {
     connect(cb.getPositive(CBPort.class), appComp.getNegative(CBPort.class), Channel.TWO_WAY);
     connect(cb.getNegative(RBPort.class), rb.getPositive(RBPort.class), Channel.TWO_WAY);
     trigger(Start.event, cb.control());
-    //TODO Connect cb
 
+    /*Selection of Set to be used
+    // 0 = Grow-Only Set
+    // 1 = Two-Phase Set (2P-Set)
+    // 2 = Observed-Removed Set (OR-Set)
+    // TODO 3 = 2P2P-Graph
+    */
+    if(mode == 0){
+      set = create(GSet.class, se.sics.kompics.Init.NONE);
+    }else if(mode == 1){
+      set = create(TwoPSet.class, se.sics.kompics.Init.NONE);
+    }else if(mode == 2){
+      set = create(ORSet.class, se.sics.kompics.Init.NONE);
+    }else if(mode == 3){
+      set = create(ORSet.class, se.sics.kompics.Init.NONE);
+    }
+    if(set != null) {
+      connect(set.getPositive(SuperSetPort.class), appComp.getNegative(SuperSetPort.class), Channel.TWO_WAY);
+      connect(set.getNegative(CBPort.class), cb.getPositive(CBPort.class), Channel.TWO_WAY);
+      trigger(Start.event, set.control());
+    }
   }
 
   public static class Init extends se.sics.kompics.Init<AppMngrComp> {
@@ -126,11 +153,13 @@ public class AppMngrComp extends ComponentDefinition {
     public final ExtPort extPorts;
     public final KAddress selfAdr;
     public final OverlayId croupierOId;
+    public final int mode; //Used to select which set to use
 
-    public Init(ExtPort extPorts, KAddress selfAdr, OverlayId croupierOId) {
+    public Init(ExtPort extPorts, KAddress selfAdr, OverlayId croupierOId, int mode) {
       this.extPorts = extPorts;
       this.selfAdr = selfAdr;
       this.croupierOId = croupierOId;
+      this.mode = mode;
     }
   }
 
