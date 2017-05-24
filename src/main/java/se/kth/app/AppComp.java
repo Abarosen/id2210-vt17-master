@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.broadcast.CBPort;
 import se.kth.app.broadcast.GBEBPort;
-import se.kth.app.sets.SuperSetPort;
+import se.kth.app.sets.CRDTPort;
 import se.kth.app.test.Ping;
 import se.kth.app.test.Pong;
 import se.sics.kompics.*;
@@ -48,7 +48,7 @@ public class AppComp extends ComponentDefinition {
   Positive<Network> networkPort = requires(Network.class);
   Positive<CroupierPort> croupierPort = requires(CroupierPort.class);
   Positive<CBPort> cb = requires(CBPort.class);
-  Positive<SuperSetPort> setPort = requires(SuperSetPort.class);
+  Positive<CRDTPort> setPort = requires(CRDTPort.class);
 
 
   Positive<GBEBPort> gbebPort = requires(GBEBPort.class);

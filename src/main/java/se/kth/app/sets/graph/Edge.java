@@ -6,7 +6,7 @@ package se.kth.app.sets.graph;
 public class Edge{
     String v1, v2;
 
-    Edge(String v1, String v2){
+    public Edge(String v1, String v2){
         this.v1 = v1;
         this.v2 = v2;
     }

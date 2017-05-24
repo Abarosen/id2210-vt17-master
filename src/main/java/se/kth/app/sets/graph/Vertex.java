@@ -6,7 +6,7 @@ package se.kth.app.sets.graph;
 
 public class Vertex{
     String id;
-    Vertex(String id){
+    public Vertex(String id){
         this.id = id;
     }
     @Override

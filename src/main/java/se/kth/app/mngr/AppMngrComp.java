@@ -23,8 +23,9 @@ import se.kth.app.*;
 import se.kth.app.broadcast.*;
 import se.kth.app.sets.GSet;
 import se.kth.app.sets.ORSet.ORSet;
-import se.kth.app.sets.SuperSetPort;
+import se.kth.app.sets.CRDTPort;
 import se.kth.app.sets.TwoPSet;
+import se.kth.app.sets.graph.TwoP2PGraph;
 import se.kth.croupier.util.NoView;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
@@ -133,16 +134,16 @@ public class AppMngrComp extends ComponentDefinition {
     // TODO 3 = 2P2P-Graph
     */
     if(mode == 0){
-      set = create(GSet.class, se.sics.kompics.Init.NONE);
+      set = create(GSet.class, new GSet.Init(selfAdr));
     }else if(mode == 1){
-      set = create(TwoPSet.class, se.sics.kompics.Init.NONE);
+      set = create(TwoPSet.class, new TwoPSet.Init(selfAdr));
     }else if(mode == 2){
-      set = create(ORSet.class, se.sics.kompics.Init.NONE);
+      set = create(ORSet.class, new ORSet.Init(selfAdr));
     }else if(mode == 3){
-      set = create(ORSet.class, se.sics.kompics.Init.NONE);
+      set = create(TwoP2PGraph.class, new TwoP2PGraph.Init(selfAdr));
     }
     if(set != null) {
-      connect(set.getPositive(SuperSetPort.class), appComp.getNegative(SuperSetPort.class), Channel.TWO_WAY);
+      connect(set.getPositive(CRDTPort.class), appComp.getNegative(CRDTPort.class), Channel.TWO_WAY);
       connect(set.getNegative(CBPort.class), cb.getPositive(CBPort.class), Channel.TWO_WAY);
       trigger(Start.event, set.control());
     }

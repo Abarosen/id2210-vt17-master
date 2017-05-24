@@ -11,24 +11,24 @@ import java.util.UUID;
 public class ORSetOperations {
 
 
-//Add
-static class Add implements KompicsEvent {
-    String value;
-    Add(String value){
+    //Add
+    public static class Add implements KompicsEvent {
+        final String value;
+        Add(String value){
         this.value = value;
     }
-}
+    }
 
     //Lookup
-    static class Lookup implements KompicsEvent{
-        String key;
+    public static class Lookup implements KompicsEvent{
+        final String key;
         Lookup(String key){
             this.key = key;
         }
     }
 
     //Response
-    static class Response implements KompicsEvent{
+    public static class Response implements KompicsEvent{
         final boolean response;
 
         Response(boolean response){
@@ -37,8 +37,8 @@ static class Add implements KompicsEvent {
     }
 
     //Remove
-    static class Remove implements KompicsEvent{
-        String value;
+    public static class Remove implements KompicsEvent{
+        final String value;
         Remove(String value){
             this.value = value;
         }

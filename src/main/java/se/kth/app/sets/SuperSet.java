@@ -16,7 +16,7 @@ import java.util.Set;
 public class SuperSet extends ComponentDefinition{
 
     Positive<CBPort> cb = requires(CBPort.class);
-    Negative<SuperSetPort> app = provides(SuperSetPort.class);
+    Negative<CRDTPort> app = provides(CRDTPort.class);
 
     Set<String> storage;
 

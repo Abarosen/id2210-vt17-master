@@ -1,6 +1,5 @@
 package se.kth.app.sets.graph;
 
-import se.kth.app.sets.ORSet.ORSetOperations;
 import se.sics.kompics.KompicsEvent;
 import se.sics.ktoolbox.util.network.KAddress;
 
@@ -11,14 +10,14 @@ import se.sics.ktoolbox.util.network.KAddress;
 public class GraphOperations {
 
     //Add
-    static class AddV implements KompicsEvent {
+    public static class AddV implements KompicsEvent {
         Vertex v;
         AddV(Vertex v){
             this.v = v;
         }
     }
 
-    static class AddE implements KompicsEvent {
+    public static class AddE implements KompicsEvent {
         Edge e;
         AddE(Edge e){
             this.e = e;
@@ -26,14 +25,14 @@ public class GraphOperations {
     }
 
     //Remove
-    static class RemoveV implements KompicsEvent {
+    public static class RemoveV implements KompicsEvent {
         Vertex v;
         RemoveV(Vertex v){
             this.v = v;
         }
     }
 
-    static class RemoveE implements KompicsEvent {
+    public static class RemoveE implements KompicsEvent {
         Edge e;
         RemoveE(Edge e){
             this.e = e;
@@ -41,7 +40,7 @@ public class GraphOperations {
     }
 
     //Lookup
-    static class Lookup implements KompicsEvent{
+    public static class Lookup implements KompicsEvent{
         KAddress ret;
         OpType type;
         Vertex v;
@@ -61,7 +60,7 @@ public class GraphOperations {
     }
 
     //Response
-    static class Response implements KompicsEvent{
+    public static class Response implements KompicsEvent{
         final boolean response;
         KAddress ret;
         Response(KAddress ret, boolean response){

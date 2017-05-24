@@ -1,12 +1,16 @@
 package se.kth.app.sets.ORSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.broadcast.CBPort;
-import se.kth.app.sets.SuperSetPort;
+import se.kth.app.sets.CRDTPort;
 import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
+import se.sics.ktoolbox.util.network.KAddress;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
@@ -14,23 +18,28 @@ import java.util.*;
  * Created by Barosen on 2017-05-19.
  */
 public class ORSet extends ComponentDefinition {
+    private static final Logger LOG = LoggerFactory.getLogger(ORSet.class);
 
     Positive<CBPort> cb = requires(CBPort.class);
-    Negative<SuperSetPort> app = provides(SuperSetPort.class);
+    Negative<CRDTPort> app = provides(CRDTPort.class);
 
+    private KAddress selfAdr;
+    private String logPrefix;
 
     Map<String,Set<UUID>> set;
 
 
-    public ORSet(){
+    public ORSet(Init init){
         set = new HashMap<>();
+        selfAdr = init.selfAdr;
+        logPrefix = "<nid:" + selfAdr.getId() + ">";
 
         subscribe(handleExternalAdd, app);
         subscribe(handleExternalRemove, app);
         subscribe(handleExternalLookup, app);
 
         subscribe(handleInternal, cb);
-        subscribe(handleInternal, cb);
+        LOG.info("{} ORSet started");
     }
 
     Handler handleExternalAdd = new Handler<ORSetOperations.Add>() {
@@ -86,11 +95,21 @@ public class ORSet extends ComponentDefinition {
                     tempset = set.get(temp.value);
                     if(tempset == null)
                         return;
+                    LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
                     tempset.removeAll(temp.ids);
                 }
-            }catch(ClassCastException  e){}
+            }catch(ClassCastException  e){
+                LOG.debug("{}Got something strange", logPrefix);
+            }
         }
     };
 
+    public static class Init extends se.sics.kompics.Init<ORSet> {
 
+        public final KAddress selfAdr;
+
+        public Init(KAddress selfAdr) {
+            this.selfAdr = selfAdr;
+        }
+    }
 }

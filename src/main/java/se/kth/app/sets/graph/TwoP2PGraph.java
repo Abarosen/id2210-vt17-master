@@ -4,11 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.broadcast.CBPort;
-import se.kth.app.sets.SuperSetPort;
+import se.kth.app.sets.CRDTPort;
 import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
+import se.sics.ktoolbox.util.network.KAddress;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,15 +22,21 @@ public class TwoP2PGraph extends ComponentDefinition {
     private static final Logger LOG = LoggerFactory.getLogger(TwoP2PGraph.class);
 
     Positive<CBPort> cb = requires(CBPort.class);
-    Negative<SuperSetPort> app = provides(SuperSetPort.class);
+    Negative<CRDTPort> app = provides(CRDTPort.class);
 
     Set<Vertex> VA;
     Set<Vertex> VR;
     Set<Edge> EA;
     Set<Edge> ER;
 
-    public TwoP2PGraph(){
+    private KAddress selfAdr;
+    private String logPrefix;
+
+    public TwoP2PGraph(Init init){
         super();
+
+        selfAdr = init.selfAdr;
+        logPrefix = "<nid:" + selfAdr.getId() + ">";
 
         VA = new HashSet<>();
         VR = new HashSet<>();
@@ -39,7 +47,7 @@ public class TwoP2PGraph extends ComponentDefinition {
         subscribe(handleInternal, cb);
         subscribe(handleLookup, app);
 
-        LOG.info("GSet started");
+        LOG.info("{} GSet started", logPrefix);
     }
 
     /*
@@ -53,8 +61,10 @@ public class TwoP2PGraph extends ComponentDefinition {
             boolean result = false;
             if(event.type.equals(GraphOperations.OpType.Edge)){
                 result = VA.contains(event.e.v1) && !VR.contains(event.e.v1) && VA.contains(event.e.v2) && !VR.contains(event.e.v2) && EA.contains(event.e) && !ER.contains(event.e);
+                LOG.trace("{} lookup({}): {}", logPrefix, event.e);
             }else{
                 result = VA.contains(event.v) && !VR.contains(event.v);
+                LOG.trace("{} lookup({}): {}", logPrefix, event.v);
             }
             trigger(new GraphOperations.Response(event.ret, result), app);
 
@@ -100,5 +110,12 @@ public class TwoP2PGraph extends ComponentDefinition {
 
         }
     };
+    public static class Init extends se.sics.kompics.Init<TwoP2PGraph> {
 
+        public final KAddress selfAdr;
+
+        public Init(KAddress selfAdr) {
+            this.selfAdr = selfAdr;
+        }
+    }
 }
