@@ -24,8 +24,10 @@ public class SimulationObserver extends ComponentDefinition {
 
     private final int minPings;
     private final int minDeadNodes;
+    private int timeouts = 0;
 
     private UUID timerId;
+    GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
 
     public SimulationObserver(Init init) {
         minPings = init.minPings;
@@ -34,8 +36,10 @@ public class SimulationObserver extends ComponentDefinition {
         subscribe(handleStart, control);
         subscribe(handleCheck, timer);
 
-        GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
         gv.setValue("simulation.pongs", 0);
+        gv.setValue("GBEB.samplesize", 0);
+        gv.setValue("GBEB.sentmessages", 0);
+        gv.setValue("GBEB.receivedmessages", 0);
         gv.setValue("text", "cpbarn");
         LOG.info("simtext: {} ", gv.getValue("text", GlobalView.class));
 
@@ -57,15 +61,26 @@ public class SimulationObserver extends ComponentDefinition {
     Handler<CheckTimeout> handleCheck = new Handler<CheckTimeout>() {
         @Override
         public void handle(CheckTimeout event) {
-            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
             //gv.setValue("simulation.pongs", 0);
 
-            if(gv.getValue("simulation.pongs", Integer.class) > minPings) {
-                LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
+            LOG.info("Amount of sent messages: {}", gv.getValue("GBEB.sentmessages", Integer.class));
+            LOG.info("Amount of receieved messagaes: {}", gv.getValue("GBEB.receivedmessages", Integer.class));
+            if(gv.getValue("GBEB.sentmessages", Integer.class) > 125 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+                //LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
+                LOG.warn("Amount of sent messages match the amount of received messages: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
                 gv.terminate();
             }
+            /*if(gv.getValue("GBEB.sentmessages", Integer.class) > 10 && gv.getValue("GBEB.samplesize", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+                //LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
+                LOG.warn("Amount of sent messages match the sample size: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
+                gv.terminate();
+            }*/
             if(gv.getDeadNodes().size() > minDeadNodes) {
                 LOG.info("Terminating simulation as the min dead nodes:{} is achieved", minDeadNodes);
+                gv.terminate();
+            }
+            if(++timeouts == 300) {
+                LOG.info("Taking too long to terminate simulation, terminating");
                 gv.terminate();
             }
         }

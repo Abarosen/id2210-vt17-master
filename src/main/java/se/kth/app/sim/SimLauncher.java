@@ -26,7 +26,13 @@ import se.sics.kompics.simulator.run.LauncherComp;
 public class SimLauncher {
     public static void main(String[] args) {
         SimulationScenario.setSeed(ScenarioSetup.scenarioSeed);
-        SimulationScenario simpleBootScenario = ScenarioGen.simpleBoot();
-        simpleBootScenario.simulate(LauncherComp.class);
+        //SimulationScenario simpleBootScenario = ScenarioGen.simpleBoot();
+        //simpleBootScenario.simulate(LauncherComp.class);
+
+        //SimulationScenario churnBootScensario = ScenarioGen.churn();
+        //churnBootScensario.simulate(LauncherComp.class);
+
+        SimulationScenario churnBootScensario = ScenarioGen.churnRevive();
+        churnBootScensario.simulate(LauncherComp.class);
     }
 }

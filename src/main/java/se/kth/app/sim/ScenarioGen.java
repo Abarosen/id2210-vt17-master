@@ -17,6 +17,8 @@
  */
 package se.kth.app.sim;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.kth.sim.compatibility.SimNodeIdExtractor;
 import se.kth.system.HostMngrComp;
 import se.sics.kompics.Init;
@@ -39,6 +41,7 @@ import java.util.Map;
  * @author Alex Ormenisan <aaor@kth.se>
  */
 public class ScenarioGen {
+    private static final Logger LOG = LoggerFactory.getLogger(ScenarioGen.class);
 
     static Operation<SetupEvent> systemSetupOp = new Operation<SetupEvent>() {
         @Override
@@ -164,6 +167,7 @@ public class ScenarioGen {
                 {
                     String nodeIp = "193.0.0." + self;
                     selfAdr = ScenarioSetup.getNodeAdr(nodeIp, self);
+                    LOG.warn("Nóde {} has been killed", self);
                 }
 
                 @Override
@@ -179,7 +183,7 @@ public class ScenarioGen {
         }
     };
 
-    public static SimulationScenario simpleBoot() {
+    public static SimulationScenario noChurn() {
         SimulationScenario scen = new SimulationScenario() {
             {
                 StochasticProcess systemSetup = new StochasticProcess() {
@@ -202,7 +206,7 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(2, startNodeOp, new BasicIntSequentialDistribution(1));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
                     }
                 };
                 //Kills an amount of nodes.
@@ -210,7 +214,7 @@ public class ScenarioGen {
                     {
                         eventInterArrivalTime(constant(0));
                         //The Second argument identifies the node to be killed
-                        raise(2, killPongerOp, new BasicIntSequentialDistribution((1)));
+                        raise(3, killPongerOp, new BasicIntSequentialDistribution((1)));
                     }
                 };
 
@@ -218,7 +222,7 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                killPonger.startAfterTerminationOf(3000, startPeers);
+                //killPonger.startAfterTerminationOf(3000, startPeers);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
@@ -227,8 +231,104 @@ public class ScenarioGen {
     }
 
     //Another scenario to test
-    public static SimulationScenario NoChurn() {
+    public static SimulationScenario churn() {
         SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
+                    }
+                };
+                //Kills an amount of nodes.
+                StochasticProcess killPonger = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(0));
+                        //The Second argument identifies the node to be killed
+                        raise(1, killPongerOp, new BasicIntSequentialDistribution((3)));
+                    }
+                };
+
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
+                killPonger.startAfterTerminationOf(10000, startPeers);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
+        };
+
+        return scen;
+    }
+
+    //Another scenario to test
+    public static SimulationScenario churnRevive() {
+        SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
+                    }
+                };
+                //Kills an amount of nodes.
+                StochasticProcess killPonger = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(0));
+                        //The Second argument identifies the node to be killed
+                        raise(1, killPongerOp, new BasicIntSequentialDistribution((1)));
+                    }
+                };
+                StochasticProcess revivePinger = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(0));
+                        raise(1, startNodeOp, new BasicIntSequentialDistribution(1));
+                        LOG.info("Node 1 has been revived");
+                    }
+                };
+
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
+                killPonger.startAfterTerminationOf(20000, startPeers);
+                revivePinger.startAfterTerminationOf(7000, killPonger);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
         };
         return scen;
     }
