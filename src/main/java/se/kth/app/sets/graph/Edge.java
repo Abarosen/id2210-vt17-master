@@ -18,4 +18,9 @@ public class Edge{
         Edge other = (Edge) obj;
         return this.v1.equals(other.v1) && this.v2.equals(other.v2);
     }
+
+    @Override
+    public String toString() {
+        return "<Edge:" + v1 + "," + v2 + ">";
+    }
 }

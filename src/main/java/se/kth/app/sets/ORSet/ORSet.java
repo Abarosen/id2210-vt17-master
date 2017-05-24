@@ -10,7 +10,7 @@ import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
 import se.sics.ktoolbox.util.network.KAddress;
-import sun.rmi.runtime.Log;
+
 
 import java.util.*;
 

@@ -16,4 +16,9 @@ public class Vertex{
         Vertex other = (Vertex) obj;
         return this.id.equals(other.id);
     }
+
+    @Override
+    public String toString() {
+        return "<Vertex: " + id + ">";
+    }
 }

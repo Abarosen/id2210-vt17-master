@@ -46,6 +46,10 @@ public class TwoP2PGraph extends ComponentDefinition {
 
         subscribe(handleInternal, cb);
         subscribe(handleLookup, app);
+        subscribe(handleAddE, app);
+        subscribe(handleAddV, app);
+        subscribe(handleRemoveV, app);
+        subscribe(handleRemoveE, app);
 
         LOG.info("{} GSet started", logPrefix);
     }
@@ -70,11 +74,14 @@ public class TwoP2PGraph extends ComponentDefinition {
 
         }
     };
-
+    //Add Edge
     Handler handleAddE = new Handler<GraphOperations.AddE>() {
         @Override
         public void handle(GraphOperations.AddE event) {
-
+            if(VA.contains(event.e.v1) && !VR.contains(event.e.v1) && VA.contains(event.e.v2) && !VR.contains(event.e.v2)){
+                LOG.trace("{} External add: {}", logPrefix, event.e);
+                trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Edge, event.e)), cb);
+            }
         }
     };
 
@@ -85,19 +92,32 @@ public class TwoP2PGraph extends ComponentDefinition {
         }
     };
 
-    Handler handleRemoveE = new Handler<GraphOperations.RemoveE>() {
-        @Override
-        public void handle(GraphOperations.RemoveE event) {
-
-        }
-    };
-
     Handler handleRemoveV = new Handler<GraphOperations.RemoveV>() {
         @Override
         public void handle(GraphOperations.RemoveV event) {
-
+            if(VA.contains(event.v) && !VR.contains(event.v)){
+                Set<Edge> temp = new HashSet<>(EA);
+                temp.removeAll(ER);
+                for(Edge e: temp){
+                    if(e.v1.equals(event.v) || e.v2.equals(event.v))
+                        ER.add(e);
+                }
+                LOG.trace("{} removing {}", logPrefix, event.v);
+                trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.RemoveV, event.v)), cb);
+            }
         }
     };
+
+    Handler handleRemoveE = new Handler<GraphOperations.RemoveE>() {
+        @Override
+        public void handle(GraphOperations.RemoveE event) {
+            if(VA.contains(event.e.v1) && !VR.contains(event.e.v1)){
+                trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.RemoveE, event.e)),cb);
+            }
+        }
+    };
+
+
 
     /*
     INTERNAL
@@ -107,7 +127,35 @@ public class TwoP2PGraph extends ComponentDefinition {
     Handler handleInternal = new Handler<CB.CB_Deliver>() {
         @Override
         public void handle(CB.CB_Deliver event) {
+            GraphOperations.InternalOperation temp;
 
+            try {
+                temp = (GraphOperations.InternalOperation) event.getContent();
+                switch (temp.type) {
+                    case Edge:
+                        EA.add(temp.e);
+                        LOG.trace("{} Adding: {}", logPrefix, temp.e);
+                        break;
+                    case Vertex:    //Add Vertex
+                        VA.add(temp.v);
+                        LOG.trace("{} Adding: {} ", logPrefix, temp.v);
+                        break;
+                    case RemoveE:
+                        if(EA.contains(temp.e)){
+                            ER.add(temp.e);
+                        }
+                        LOG.trace("{} Removing: {} ", logPrefix, temp.e);
+                        break;
+                    case RemoveV:
+                        if(VA.contains(temp.v)){
+                            VR.add(temp.v);
+                        }
+                        LOG.trace("{} Removing: {}", logPrefix);
+                        break;
+                }
+            }catch(ClassCastException  e){
+                LOG.debug("{}Got something strange", logPrefix);
+            }
         }
     };
     public static class Init extends se.sics.kompics.Init<TwoP2PGraph> {

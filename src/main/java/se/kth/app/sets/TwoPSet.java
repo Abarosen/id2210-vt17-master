@@ -14,7 +14,7 @@ import java.util.Set;
  * Created by Barosen on 2017-05-18.
  */
 public class TwoPSet extends SuperSet{
-    private static final Logger LOG = LoggerFactory.getLogger(GSet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TwoPSet.class);
 
     private Set<String> tombstones;
 

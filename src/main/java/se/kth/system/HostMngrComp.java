@@ -112,7 +112,7 @@ public class HostMngrComp extends ComponentDefinition {
             this.selfAdr = selfAdr;
             this.bootstrapServer = bootstrapServer;
             this.croupierId = croupierId;
-            this.mode = 0;
+            this.mode = 3;
         }
         public Init(KAddress selfAdr, KAddress bootstrapServer, OverlayId croupierId, int mode) {
             this.selfAdr = selfAdr;
