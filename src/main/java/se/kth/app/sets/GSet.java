@@ -43,12 +43,12 @@ public class GSet extends SuperSet{
     };
 
     //Lookup
-    Handler handleLookup = new Handler<SetOperations.Lookup>() {
+    Handler handleLookup = new Handler<ExternalEvents.Lookup>() {
         @Override
-        public void handle(SetOperations.Lookup event) {
+        public void handle(ExternalEvents.Lookup event) {
             boolean result = storage.contains(event.key);
             LOG.trace("{} Lookup({}), result: {}" , logPrefix, event.key, result);
-            trigger(new SetOperations.Response(result), app);
+            trigger(new ExternalEvents.Response(event.ret, result), app);
         }
     };
 

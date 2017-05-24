@@ -59,18 +59,18 @@ public class TwoPSet extends SuperSet{
 
 
     //Lookup
-    Handler handleLookup = new Handler<SetOperations.Lookup>() {
+    Handler handleLookup = new Handler<ExternalEvents.Lookup>() {
         @Override
-        public void handle(SetOperations.Lookup event) {
+        public void handle(ExternalEvents.Lookup event) {
             if(storage.contains(event.key)){
                 if(!tombstones.contains(event.key)) {
                     LOG.trace("{} lookup({}), result: true", logPrefix, event.key);
-                    trigger(new SetOperations.Response(true), app);
+                    trigger(new ExternalEvents.Response(event.ret, true), app);
                     return;
                 }
             }
             LOG.trace("{} lookup({}), result: false", logPrefix, event.key);
-            trigger(new SetOperations.Response(false), app);
+            trigger(new ExternalEvents.Response(event.ret, false), app);
         }
     };
 

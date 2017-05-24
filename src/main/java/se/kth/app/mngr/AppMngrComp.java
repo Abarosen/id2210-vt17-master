@@ -131,7 +131,7 @@ public class AppMngrComp extends ComponentDefinition {
     // 0 = Grow-Only Set
     // 1 = Two-Phase Set (2P-Set)
     // 2 = Observed-Removed Set (OR-Set)
-    // TODO 3 = 2P2P-Graph
+    // 3 = 2P2P-Graph
     */
     if(mode == 0){
       set = create(GSet.class, new GSet.Init(selfAdr));

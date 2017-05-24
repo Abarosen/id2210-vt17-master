@@ -9,17 +9,11 @@ import se.sics.kompics.PortType;
  */
 public class CRDTPort extends PortType{
     {
-        //Simple Sets
-        indication(SetOperations.Response.class);
-        request(SetOperations.Lookup.class);
-        request(SetOperations.Add.class);
-        request(SetOperations.Remove.class);
-
-        //OR-Set
-        indication(ORSetOperations.Response.class);
-        request(ORSetOperations.Lookup.class);
-        request(ORSetOperations.Add.class);
-        request(ORSetOperations.Remove.class);
+        //Sets
+        indication(ExternalEvents.Response.class);
+        request(ExternalEvents.Lookup.class);
+        request(ExternalEvents.Add.class);
+        request(ExternalEvents.Remove.class);
 
         //Graph
         indication(GraphOperations.Response.class);

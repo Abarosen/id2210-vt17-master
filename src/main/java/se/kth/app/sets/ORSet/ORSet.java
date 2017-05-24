@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.broadcast.CBPort;
 import se.kth.app.sets.CRDTPort;
+import se.kth.app.sets.ExternalEvents;
 import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
@@ -42,27 +43,27 @@ public class ORSet extends ComponentDefinition {
         LOG.info("{} ORSet started");
     }
 
-    Handler handleExternalAdd = new Handler<ORSetOperations.Add>() {
+    Handler handleExternalAdd = new Handler<ExternalEvents.Add>() {
         @Override
-        public void handle(ORSetOperations.Add event) {
+        public void handle(ExternalEvents.Add event) {
             trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, UUID.randomUUID())), cb);
         }
     };
 
-    Handler handleExternalLookup = new Handler<ORSetOperations.Lookup>() {
+    Handler handleExternalLookup = new Handler<ExternalEvents.Lookup>() {
         @Override
-        public void handle(ORSetOperations.Lookup event) {
+        public void handle(ExternalEvents.Lookup event) {
             Set<UUID> temp = set.get(event.key);
             if(temp == null || temp.isEmpty()){
-                trigger(new ORSetOperations.Response(false), app);
+                trigger(new ExternalEvents.Response(event.ret, false), app);
                 return;
             }
-            trigger(new ORSetOperations.Response(true), app);
+            trigger(new ExternalEvents.Response(event.ret,true), app);
         }
     };
-    Handler handleExternalRemove = new Handler<ORSetOperations.Remove>() {
+    Handler handleExternalRemove = new Handler<ExternalEvents.Remove>() {
         @Override
-        public void handle(ORSetOperations.Remove event) {
+        public void handle(ExternalEvents.Remove event) {
             Set<UUID> temp = set.get(event.value);
             if(temp == null || temp.isEmpty())
                 return;

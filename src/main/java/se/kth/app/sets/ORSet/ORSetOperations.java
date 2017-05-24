@@ -11,38 +11,7 @@ import java.util.UUID;
 public class ORSetOperations {
 
 
-    //Add
-    public static class Add implements KompicsEvent {
-        final String value;
-        Add(String value){
-        this.value = value;
-    }
-    }
 
-    //Lookup
-    public static class Lookup implements KompicsEvent{
-        final String key;
-        Lookup(String key){
-            this.key = key;
-        }
-    }
-
-    //Response
-    public static class Response implements KompicsEvent{
-        final boolean response;
-
-        Response(boolean response){
-            this.response = response;
-        }
-    }
-
-    //Remove
-    public static class Remove implements KompicsEvent{
-        final String value;
-        Remove(String value){
-            this.value = value;
-        }
-    }
 
     /**************************************************/
     /********************Internal**********************/

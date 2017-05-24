@@ -27,16 +27,16 @@ public class SuperSet extends ComponentDefinition{
         subscribe(handleExternalRemove, app);
     }
 
-    Handler handleExternalAdd = new Handler<SetOperations.Add>() {
+    Handler handleExternalAdd = new Handler<ExternalEvents.Add>() {
         @Override
-        public void handle(SetOperations.Add event) {
+        public void handle(ExternalEvents.Add event) {
             trigger(new CB.CB_Broadcast(new SetOperations.InternalOperation(SetOperations.OpType.Add, event.value)), cb);
         }
     };
 
-    Handler handleExternalRemove = new Handler<SetOperations.Remove>() {
+    Handler handleExternalRemove = new Handler<ExternalEvents.Remove>() {
         @Override
-        public void handle(SetOperations.Remove event) {
+        public void handle(ExternalEvents.Remove event) {
             trigger(new CB.CB_Broadcast(new SetOperations.InternalOperation(SetOperations.OpType.Remove, event.value)), cb);
         }
     };
