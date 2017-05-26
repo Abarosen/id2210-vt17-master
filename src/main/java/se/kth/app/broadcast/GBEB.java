@@ -7,6 +7,7 @@ import se.kth.croupier.util.CroupierHelper;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.network.Transport;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.croupier.CroupierPort;
 import se.sics.ktoolbox.croupier.event.CroupierSample;
 import se.sics.ktoolbox.util.network.KAddress;
@@ -27,6 +28,7 @@ public class GBEB extends ComponentDefinition {
     private KAddress selfAdr;
     List<PastEntry> past;
     String logPrefix;
+    GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
 
 
     //Ports
@@ -68,11 +70,13 @@ public class GBEB extends ComponentDefinition {
                 return;
             }
             List<KAddress> sample = CroupierHelper.getSample(croupierSample);
+            gv.setValue("GBEB.samplesize", gv.getValue("GBEB.samplesize", Integer.class) + sample.size());
             LOG.trace("{} samples({}) recieved", logPrefix, sample.size());
             for (KAddress peer : sample) {
                 KHeader header = new BasicHeader(selfAdr, peer, Transport.UDP);
                 KContentMsg msg = new BasicContentMsg(header, new HistoryRequest());
                 trigger(msg, networkPort);
+                gv.setValue("GBEB.sentmessages", gv.getValue("GBEB.sentmessages", Integer.class) + 1);
             }
         }
     };
@@ -81,6 +85,7 @@ public class GBEB extends ComponentDefinition {
         @Override
         public void handle(HistoryResponse content, KContentMsg<?, ?, HistoryResponse> container) {
             LOG.trace("{} handling response from {}", logPrefix, container.getHeader().getSource());
+            gv.setValue("GBEB.receivedmessages", gv.getValue("GBEB.receivedmessages", Integer.class) + 1);
             for(PastEntry x : content.past){
                 if(!past.contains(x)){
                     trigger(new GBEB_Deliver(x.content), gbeb);

@@ -17,6 +17,7 @@
  */
 package se.kth.app.sim;
 
+import se.sics.kompics.network.test.NetworkTest;
 import se.sics.kompics.simulator.SimulationScenario;
 import se.sics.kompics.simulator.run.LauncherComp;
 
@@ -26,7 +27,16 @@ import se.sics.kompics.simulator.run.LauncherComp;
 public class SimLauncher {
     public static void main(String[] args) {
         SimulationScenario.setSeed(ScenarioSetup.scenarioSeed);
-        SimulationScenario simpleBootScenario = ScenarioGen.simpleBoot();
-        simpleBootScenario.simulate(LauncherComp.class);
+        //SimulationScenario simpleBootScenario = ScenarioGen.simpleBoot();
+        //simpleBootScenario.simulate(LauncherComp.class);
+
+        //SimulationScenario churnBootScensario = ScenarioGen.churn();
+        //churnBootScensario.simulate(LauncherComp.class);
+
+        //SimulationScenario churnBootScensario = ScenarioGen.churnRevive();
+        //churnBootScensario.simulate(LauncherComp.class);
+
+        SimulationScenario gsetScenario = ScenarioGen.gset();
+        gsetScenario.simulate(LauncherComp.class);
     }
 }
