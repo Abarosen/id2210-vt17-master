@@ -184,6 +184,35 @@ public class ScenarioGen {
         }
     };
 
+    static Operation<StartNodeEvent> startBootstrapServerOp = new Operation<StartNodeEvent>() {
+
+        @Override
+        public StartNodeEvent generate() {
+            return new StartNodeEvent() {
+                KAddress selfAdr;
+
+                {
+                    selfAdr = ScenarioSetup.bootstrapServer;
+                }
+
+                @Override
+                public Address getNodeAddress() {
+                    return selfAdr;
+                }
+
+                @Override
+                public Class getComponentDefinition() {
+                    return BootstrapServerComp.class;
+                }
+
+                @Override
+                public BootstrapServerComp.Init getComponentInit() {
+                    return new BootstrapServerComp.Init(selfAdr);
+                }
+            };
+        }
+    };
+
     public static SimulationScenario noChurn() {
         SimulationScenario scen = new SimulationScenario() {
             {
