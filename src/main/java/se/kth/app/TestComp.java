@@ -39,9 +39,9 @@ public class TestComp extends ComponentDefinition{
         public void handle(Start event) {
             LOG.info("{}starting...", logPrefix);
 
-            //KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
-            //KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-            //trigger(msg, networkPort);
+            KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
+            KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+            trigger(msg, networkPort);
         }
     };
 

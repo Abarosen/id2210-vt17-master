@@ -115,7 +115,6 @@ public class AppMngrComp extends ComponentDefinition {
     connect(appComp.getNegative(CroupierPort.class), extPorts.croupierPort, Channel.TWO_WAY);
 
     //GBEB
-    connect(gbeb.getPositive(GBEBPort.class), appComp.getNegative(GBEBPort.class), Channel.TWO_WAY);
     connect(gbeb.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
     connect(gbeb.getNegative(CroupierPort.class), extPorts.croupierPort, Channel.TWO_WAY);
     trigger(Start.event, gbeb.control());
@@ -129,9 +128,11 @@ public class AppMngrComp extends ComponentDefinition {
     connect(cb.getNegative(RBPort.class), rb.getPositive(RBPort.class), Channel.TWO_WAY);
     trigger(Start.event, cb.control());
 
-    if(selfAdr.getId().equals("1")) {
+    if(selfAdr.getId().toString().equals("1")) {
+      System.out.println("aksdjf");
       testComp = create(TestComp.class, new TestComp.Init(selfAdr, mode));
       connect(testComp.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
+      trigger(Start.event, testComp.control());
     }
 
 
