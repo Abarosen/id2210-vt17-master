@@ -23,14 +23,13 @@ public class TestComp extends ComponentDefinition{
 
     Positive<Network> networkPort = requires(Network.class);
 
-    TestComp(Init init){
+    public TestComp(Init init){
         selfAdr = init.selfAdr;
         mode = init.mode;
         logPrefix = "<nid:" + selfAdr.getId() + ">";
 
         subscribe(handleStart, control);
         subscribe(handleResponse, networkPort);
-
 
     }
 
@@ -50,7 +49,7 @@ public class TestComp extends ComponentDefinition{
 
         @Override
         public void handle(ExternalEvents.Response content, KContentMsg<?, ?, ExternalEvents.Response> container) {
-
+            LOG.info("{} Response received!");
         }
     };
 

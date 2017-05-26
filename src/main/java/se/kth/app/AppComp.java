@@ -123,8 +123,8 @@ public class AppComp extends ComponentDefinition {
   Handler handleTest = new Handler<CB.CB_Deliver>() {
     @Override
     public void handle(CB.CB_Deliver cbEvent) {
-      TestEvent t = (TestEvent) cbEvent.getContent();
-      LOG.info("{} test received {}", logPrefix, t.message);
+      //TestEvent t = (TestEvent) cbEvent.getContent();
+      //LOG.info("{} test received {}", logPrefix, t.message);
     }
   };
 

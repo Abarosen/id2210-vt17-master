@@ -33,8 +33,9 @@ public class GSet extends SuperSet{
                 temp = (SetOperations.InternalOperation) event.getContent();
                 if(temp.type.equals(SetOperations.OpType.Add)) {
                     //Add
-                    LOG.trace("{} Adding value, Set: {}", logPrefix, storage.toString());
                     storage.add(temp.value);
+                    LOG.trace("{} Adding value:{} , Set: {}", logPrefix,temp.value, storage.toString());
+
                 }
             }catch(ClassCastException  e){
                 LOG.trace("{}Got something strange", logPrefix);

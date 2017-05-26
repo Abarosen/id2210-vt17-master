@@ -129,7 +129,6 @@ public class AppMngrComp extends ComponentDefinition {
     trigger(Start.event, cb.control());
 
     if(selfAdr.getId().toString().equals("1")) {
-      System.out.println("aksdjf");
       testComp = create(TestComp.class, new TestComp.Init(selfAdr, mode));
       connect(testComp.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
       trigger(Start.event, testComp.control());
