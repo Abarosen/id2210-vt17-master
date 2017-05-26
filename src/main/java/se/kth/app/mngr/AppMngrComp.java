@@ -26,6 +26,7 @@ import se.kth.app.sets.ORSet.ORSet;
 import se.kth.app.sets.CRDTPort;
 import se.kth.app.sets.TwoPSet;
 import se.kth.app.sets.graph.TwoP2PGraph;
+import se.kth.app.TestComp;
 import se.kth.croupier.util.NoView;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
@@ -60,6 +61,7 @@ public class AppMngrComp extends ComponentDefinition {
   private Component rb;
   private Component cb;
   private Component set;
+  private Component testComp;
   //TODO Add Additional Components
 
   //******************************AUX_STATE***********************************
@@ -126,6 +128,12 @@ public class AppMngrComp extends ComponentDefinition {
     connect(cb.getPositive(CBPort.class), appComp.getNegative(CBPort.class), Channel.TWO_WAY);
     connect(cb.getNegative(RBPort.class), rb.getPositive(RBPort.class), Channel.TWO_WAY);
     trigger(Start.event, cb.control());
+
+    if(selfAdr.getId().equals("1")) {
+      testComp = create(TestComp.class, new TestComp.Init(selfAdr, mode));
+      connect(testComp.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
+    }
+
 
     /*Selection of Set to be used
     // 0 = Grow-Only Set

@@ -78,7 +78,7 @@ public class AppComp extends ComponentDefinition {
     subscribe(handleLookup, networkPort);
 
     //Graph
-    subscribe(handleGResponse, networkPort);
+    subscribe(handleGResponse, setPort);
     subscribe(handleAddE, networkPort);
     subscribe(handleAddV, networkPort);
     subscribe(handleRemoveV, networkPort);
@@ -101,9 +101,9 @@ public class AppComp extends ComponentDefinition {
       }
       //List<KAddress> sample = CroupierHelper.getSample(croupierSample);
       if(selfAdr.getId().toString().equals("1")){
-        LOG.info("{} TESTING! counter:{}", logPrefix, counter);
-        trigger(new CB.CB_Broadcast(new TestEvent("hello: " + counter)), cb);
-        counter++;
+        //LOG.info("{} TESTING! counter:{}", logPrefix, counter);
+        //trigger(new CB.CB_Broadcast(new TestEvent("hello: " + counter)), cb);
+        //counter++;
       }
 
       /*for (KAddress peer : sample) {
