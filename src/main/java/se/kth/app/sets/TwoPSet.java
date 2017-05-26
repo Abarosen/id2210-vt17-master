@@ -65,12 +65,12 @@ public class TwoPSet extends SuperSet{
             if(storage.contains(event.key)){
                 if(!tombstones.contains(event.key)) {
                     LOG.trace("{} lookup({}), result: true", logPrefix, event.key);
-                    trigger(new ExternalEvents.Response(event.ret, true), app);
+                    trigger(new ExternalEvents.Response(event.ret, event.key, true), app);
                     return;
                 }
             }
             LOG.trace("{} lookup({}), result: false", logPrefix, event.key);
-            trigger(new ExternalEvents.Response(event.ret, false), app);
+            trigger(new ExternalEvents.Response(event.ret, event.key, false), app);
         }
     };
 

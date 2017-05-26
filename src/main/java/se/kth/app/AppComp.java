@@ -21,12 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.broadcast.CBPort;
-import se.kth.app.broadcast.GBEBPort;
 import se.kth.app.sets.CRDTPort;
 import se.kth.app.sets.ExternalEvents;
 import se.kth.app.sets.graph.GraphOperations;
-import se.kth.app.test.Ping;
-import se.kth.app.test.Pong;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.network.Transport;
@@ -56,7 +53,6 @@ public class AppComp extends ComponentDefinition {
   Positive<CRDTPort> setPort = requires(CRDTPort.class);
 
 
-  Positive<GBEBPort> gbebPort = requires(GBEBPort.class);
 
   //**************************************************************************
   private KAddress selfAdr;

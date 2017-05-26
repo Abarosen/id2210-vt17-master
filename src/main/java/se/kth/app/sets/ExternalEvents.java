@@ -32,11 +32,13 @@ public class ExternalEvents {
     //Response
     public static class Response implements KompicsEvent{
         public final boolean res;
+        public final String key;
         public final KAddress ret;
 
 
-        public Response(KAddress ret, boolean res){
+        public Response(KAddress ret, String key, boolean res){
             this.res = res;
+            this.key = key;
             this.ret = ret;
         }
     }

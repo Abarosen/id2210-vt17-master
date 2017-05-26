@@ -48,7 +48,7 @@ public class GSet extends SuperSet{
         public void handle(ExternalEvents.Lookup event) {
             boolean result = storage.contains(event.key);
             LOG.trace("{} Lookup({}), result: {}" , logPrefix, event.key, result);
-            trigger(new ExternalEvents.Response(event.ret, result), app);
+            trigger(new ExternalEvents.Response(event.ret, event.key, result), app);
         }
     };
 

@@ -55,10 +55,10 @@ public class ORSet extends ComponentDefinition {
         public void handle(ExternalEvents.Lookup event) {
             Set<UUID> temp = set.get(event.key);
             if(temp == null || temp.isEmpty()){
-                trigger(new ExternalEvents.Response(event.ret, false), app);
+                trigger(new ExternalEvents.Response(event.ret, event.key, false), app);
                 return;
             }
-            trigger(new ExternalEvents.Response(event.ret,true), app);
+            trigger(new ExternalEvents.Response(event.ret,event.key ,true), app);
         }
     };
     Handler handleExternalRemove = new Handler<ExternalEvents.Remove>() {

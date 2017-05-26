@@ -63,14 +63,18 @@ public class TwoP2PGraph extends ComponentDefinition {
         @Override
         public void handle(GraphOperations.Lookup event) {
             boolean result = false;
+            Object retKey;
             if(event.type.equals(GraphOperations.OpType.Edge)){
+                retKey = event.e;
                 result = VA.contains(event.e.v1) && !VR.contains(event.e.v1) && VA.contains(event.e.v2) && !VR.contains(event.e.v2) && EA.contains(event.e) && !ER.contains(event.e);
                 LOG.trace("{} lookup({}): {}", logPrefix, event.e);
+
             }else{
+                retKey = event.v;
                 result = VA.contains(event.v) && !VR.contains(event.v);
                 LOG.trace("{} lookup({}): {}", logPrefix, event.v);
             }
-            trigger(new GraphOperations.Response(event.ret, result), app);
+            trigger(new GraphOperations.Response(event.ret, retKey, result), app);
 
         }
     };
