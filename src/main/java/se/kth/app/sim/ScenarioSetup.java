@@ -39,6 +39,7 @@ public class ScenarioSetup {
   public static final KAddress bootstrapServer;
   public static final KAddress observer;
   public static final OverlayId croupierOId;
+  public static final KAddress testId;
 
   static {
     croupierOId = SystemSetup.setup();
@@ -47,6 +48,8 @@ public class ScenarioSetup {
       bootstrapServer = NatAwareAddressImpl.open(new BasicAddress(InetAddress.getByName("193.0.0.1"), appPort,
         bootstrapId));
       observer = NatAwareAddressImpl.open(new BasicAddress(InetAddress.getByName("193.0.0.2"), appPort,
+              bootstrapId));
+      testId = NatAwareAddressImpl.open(new BasicAddress(InetAddress.getByName("193.0.0.3"), appPort,
               bootstrapId));
     } catch (UnknownHostException ex) {
       throw new RuntimeException(ex);

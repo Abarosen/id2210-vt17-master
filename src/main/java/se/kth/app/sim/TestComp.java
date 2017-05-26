@@ -20,16 +20,18 @@ public class TestComp extends ComponentDefinition{
     private static final Logger LOG = LoggerFactory.getLogger(TestComp.class);
     private String logPrefix = " ";
     private KAddress selfAdr, targ;
+    private int mode;
 
     Positive<Network> networkPort = requires(Network.class);
 
     TestComp(Init init){
         selfAdr = init.selfAdr;
+        mode = init.mode;
         logPrefix = "<nid:" + selfAdr.getId() + ">";
 
 
         KHeader header = new BasicHeader(selfAdr, targ, Transport.UDP);
-        KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("sssss") );
+        KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
         trigger(msg, networkPort);
 
     }
@@ -41,9 +43,9 @@ public class TestComp extends ComponentDefinition{
         public final KAddress selfAdr;
         KAddress self, targ;
         int mode;
-        public Init(KAddress selfAdr) {
+        public Init(KAddress selfAdr, int mode) {
             this.selfAdr = selfAdr;
-
+            this.mode = mode;
         }
     }
 }
