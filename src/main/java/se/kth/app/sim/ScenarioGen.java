@@ -184,7 +184,7 @@ public class ScenarioGen {
         }
     };
 
-    static Operation<StartNodeEvent> startBootstrapServerOp = new Operation<StartNodeEvent>() {
+    static Operation<StartNodeEvent> startTestComp = new Operation<StartNodeEvent>() {
 
         @Override
         public StartNodeEvent generate() {
@@ -192,7 +192,7 @@ public class ScenarioGen {
                 KAddress selfAdr;
 
                 {
-                    selfAdr = ScenarioSetup.bootstrapServer;
+                    selfAdr = ScenarioSetup.testId;
                 }
 
                 @Override
