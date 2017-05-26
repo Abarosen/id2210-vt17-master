@@ -37,10 +37,19 @@ public class TestComp extends ComponentDefinition{
         @Override
         public void handle(Start event) {
             LOG.info("{}starting...", logPrefix);
+            if(mode != 3) {
+                KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
 
-            KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
-            KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-            trigger(msg, networkPort);
+
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test"));
+                trigger(msg, networkPort);
+
+                KContentMsg msg2 = new BasicContentMsg(header, new ExternalEvents.Add("Test2"));
+                trigger(msg2, networkPort);
+
+                KContentMsg msg3 = new BasicContentMsg(header, new ExternalEvents.Lookup("Test"));
+                trigger(msg3, networkPort);
+            }
         }
     };
 
@@ -49,7 +58,7 @@ public class TestComp extends ComponentDefinition{
 
         @Override
         public void handle(ExternalEvents.Response content, KContentMsg<?, ?, ExternalEvents.Response> container) {
-            LOG.info("{} Response received!");
+            LOG.info("{} Response received! Key: {}, Result: {}", logPrefix, content.key, content.res);
         }
     };
 

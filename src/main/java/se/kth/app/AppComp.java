@@ -68,7 +68,7 @@ public class AppComp extends ComponentDefinition {
     subscribe(handleStart, control);
 
     subscribe(handleCroupierSample, croupierPort);
-    subscribe(handleTest, cb);
+
 
 
     //Set handlers
@@ -120,13 +120,6 @@ public class AppComp extends ComponentDefinition {
     }
   }
 
-  Handler handleTest = new Handler<CB.CB_Deliver>() {
-    @Override
-    public void handle(CB.CB_Deliver cbEvent) {
-      //TestEvent t = (TestEvent) cbEvent.getContent();
-      //LOG.info("{} test received {}", logPrefix, t.message);
-    }
-  };
 
   //Handle Set
 
@@ -135,7 +128,7 @@ public class AppComp extends ComponentDefinition {
 
     @Override
     public void handle(ExternalEvents.Lookup content, KContentMsg<?, ?, ExternalEvents.Lookup> container) {
-      LOG.info("{}received ping from:{}", logPrefix, container.getHeader().getSource());
+      LOG.info("{}received Lookup from:{}", logPrefix, container.getHeader().getSource());
       trigger(new ExternalEvents.Lookup(container.getHeader().getSource(), content.key), setPort);
     }
   };
@@ -172,9 +165,9 @@ public class AppComp extends ComponentDefinition {
 
   //Graph
 
-  Handler handleGResponse = new Handler<ExternalEvents.Response>() {
+  Handler handleGResponse = new Handler<GraphOperations.Response>() {
     @Override
-    public void handle(ExternalEvents.Response event) {
+    public void handle(GraphOperations.Response event) {
       KHeader header = new BasicHeader(selfAdr, event.ret, Transport.UDP);
       KContentMsg msg = new BasicContentMsg(header, event);
       trigger(msg, networkPort);

@@ -46,7 +46,7 @@ public class ExternalEvents {
     //Remove
     public static class Remove implements KompicsEvent{
         public final String value;
-        Remove(String value){
+        public Remove(String value){
             this.value = value;
         }
     }

@@ -63,7 +63,8 @@ public class GraphOperations {
     public static class Response implements KompicsEvent{
         public final boolean response;
         public final Object key;
-        KAddress ret;
+        public final KAddress ret;
+
         Response(KAddress ret, Object key, boolean response){
             this.response = response;
             this.key = key;

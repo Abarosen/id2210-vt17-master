@@ -43,12 +43,12 @@ public class TwoPSet extends SuperSet{
                 if(temp.type.equals(SetOperations.OpType.Add)) {
                     //Add
                     storage.add(temp.value);
-                    LOG.trace("{} adding value {}", logPrefix, temp.value);
+                    LOG.trace("{} adding value({}) store: {}, tombstone: {}", logPrefix, temp.value, storage, tombstones);
                 }else if(temp.type.equals(SetOperations.OpType.Remove)){
                     //Remove
                     if(storage.contains(temp.value)) {
-                        storage.add(temp.value);
-                        LOG.trace("{} removing value {}", logPrefix, temp.value);
+                        tombstones.add(temp.value);
+                        LOG.trace("{} removing value({}) store: {}, tombstone: {}", logPrefix, temp.value, storage, tombstones);
                     }
                 }
             }catch(ClassCastException  e){

@@ -144,7 +144,7 @@ public class ScenarioGen {
 
                 @Override
                 public HostMngrComp.Init getComponentInit() {
-                    return new HostMngrComp.Init(selfAdr, ScenarioSetup.bootstrapServer, ScenarioSetup.croupierOId, 0);
+                    return new HostMngrComp.Init(selfAdr, ScenarioSetup.bootstrapServer, ScenarioSetup.croupierOId, 1);
                 }
 
                 @Override
