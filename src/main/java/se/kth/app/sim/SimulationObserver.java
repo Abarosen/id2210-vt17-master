@@ -40,6 +40,8 @@ public class SimulationObserver extends ComponentDefinition {
         gv.setValue("GBEB.samplesize", 0);
         gv.setValue("GBEB.sentmessages", 0);
         gv.setValue("GBEB.receivedmessages", 0);
+        gv.setValue("Set.receivedadds", 0);
+        gv.setValue("Set.receivedremoves", 0);
         gv.setValue("text", "cpbarn");
         LOG.info("simtext: {} ", gv.getValue("text", GlobalView.class));
 
@@ -65,7 +67,20 @@ public class SimulationObserver extends ComponentDefinition {
 
             LOG.info("Amount of sent messages: {}", gv.getValue("GBEB.sentmessages", Integer.class));
             LOG.info("Amount of receieved messagaes: {}", gv.getValue("GBEB.receivedmessages", Integer.class));
-            if(gv.getValue("GBEB.sentmessages", Integer.class) > 125 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+            LOG.info("Amount of receieved adds: {}", gv.getValue("Set.receivedadds", Integer.class));
+            LOG.info("Amount of receieved remove: {}", gv.getValue("Set.receivedremoves", Integer.class));
+            /*if(gv.getValue("Set.receivedadds", Integer.class) == 3) {
+                LOG.warn("Received 3 adds, exiting...");
+                gv.terminate();
+            }*/
+            /*if(gv.getValue("Set.receivedremoves", Integer.class) == 3) {
+                LOG.warn("Received 3 removes");
+                if(gv.getValue("Set.receivedadds", Integer.class) == gv.getValue("Set.receivedremoves", Integer.class)) {
+                    LOG.warn("Received 3 adds and 3 removes, exiting...");
+                    gv.terminate();
+                }
+            }*/
+            if(gv.getValue("GBEB.sentmessages", Integer.class) > 400 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
                 //LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
                 LOG.warn("Amount of sent messages match the amount of received messages: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
                 gv.terminate();
@@ -76,11 +91,11 @@ public class SimulationObserver extends ComponentDefinition {
                 gv.terminate();
             }*/
             if(gv.getDeadNodes().size() > minDeadNodes) {
-                LOG.info("Terminating simulation as the min dead nodes:{} is achieved", minDeadNodes);
+                LOG.warn("Terminating simulation as the min dead nodes:{} is achieved", minDeadNodes);
                 gv.terminate();
             }
             if(++timeouts == 300) {
-                LOG.info("Taking too long to terminate simulation, terminating");
+                LOG.warn("Taking too long to terminate simulation, terminating");
                 gv.terminate();
             }
         }

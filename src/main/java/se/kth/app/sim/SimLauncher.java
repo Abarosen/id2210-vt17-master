@@ -36,7 +36,10 @@ public class SimLauncher {
         //SimulationScenario churnBootScensario = ScenarioGen.churnRevive();
         //churnBootScensario.simulate(LauncherComp.class);
 
-        SimulationScenario gsetScenario = ScenarioGen.gset();
-        gsetScenario.simulate(LauncherComp.class);
+        //SimulationScenario gsetScenario = ScenarioGen.gset();
+        //gsetScenario.simulate(LauncherComp.class);
+
+        SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
+        twopsetScenario.simulate(LauncherComp.class);
     }
 }

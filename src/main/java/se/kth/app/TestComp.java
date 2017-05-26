@@ -36,11 +36,40 @@ public class TestComp extends ComponentDefinition{
     Handler handleStart = new Handler<Start>() {
         @Override
         public void handle(Start event) {
-            LOG.info("{}starting...", logPrefix);
+            LOG.info("{}starting TestComp... ", logPrefix);
 
             KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
-            KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-            trigger(msg, networkPort);
+            if(mode == 0) {
+
+            } else if(mode == 1) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                trigger(msg, networkPort);
+            } else if(mode == 2) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
+                trigger(msg, networkPort);
+                trigger(removeMsg, networkPort);
+            } else if(mode == 3) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                KContentMsg addMsg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                trigger(msg, networkPort);
+                trigger(addMsg, networkPort);
+            } else if(mode == 4) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                trigger(msg, networkPort);
+                KContentMsg lookup = new BasicContentMsg(header, new ExternalEvents.Lookup("Test") );
+                trigger(lookup, networkPort);
+            } else if(mode == 5) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
+                trigger(msg, networkPort);
+                trigger(removeMsg, networkPort);
+            } else if(mode == 6) {
+                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
+                trigger(msg, networkPort);
+                trigger(removeMsg, networkPort);
+            }
         }
     };
 
@@ -49,6 +78,9 @@ public class TestComp extends ComponentDefinition{
 
         @Override
         public void handle(ExternalEvents.Response content, KContentMsg<?, ?, ExternalEvents.Response> container) {
+            if(content.res == true) {
+                LOG.warn("I GOT IT");
+            }
             LOG.info("{} Response received!");
         }
     };
@@ -57,6 +89,7 @@ public class TestComp extends ComponentDefinition{
 
         public final KAddress selfAdr;
         int mode;
+        int setTestMode;
         public Init(KAddress selfAdr, int mode) {
             this.selfAdr = selfAdr;
             this.mode = mode;

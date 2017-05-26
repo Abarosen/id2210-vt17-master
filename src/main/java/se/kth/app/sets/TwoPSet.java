@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.kth.app.sets.graph.TwoP2PGraph;
 import se.sics.kompics.*;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.util.network.KAddress;
 
 import java.util.HashSet;
@@ -42,13 +43,19 @@ public class TwoPSet extends SuperSet{
                 temp = (SetOperations.InternalOperation) event.getContent();
                 if(temp.type.equals(SetOperations.OpType.Add)) {
                     //Add
-                    storage.add(temp.value);
-                    LOG.trace("{} adding value {}", logPrefix, temp.value);
+                    if(storage.add(temp.value)) {
+                        LOG.trace("{} adding value {}", logPrefix, temp.value);
+                        GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                        gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
+                    }
                 }else if(temp.type.equals(SetOperations.OpType.Remove)){
                     //Remove
                     if(storage.contains(temp.value)) {
-                        storage.add(temp.value);
-                        LOG.trace("{} removing value {}", logPrefix, temp.value);
+                        if(storage.add(temp.value)); {
+                            LOG.trace("{} removing value {}", logPrefix, temp.value);
+                            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                            gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
+                        }
                     }
                 }
             }catch(ClassCastException  e){

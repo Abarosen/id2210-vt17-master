@@ -10,6 +10,7 @@ import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.util.network.KAddress;
 
 
@@ -47,6 +48,8 @@ public class ORSet extends ComponentDefinition {
         @Override
         public void handle(ExternalEvents.Add event) {
             trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, UUID.randomUUID())), cb);
+            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
         }
     };
 
@@ -69,6 +72,8 @@ public class ORSet extends ComponentDefinition {
                 return;
 
             trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, temp)), cb);
+            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
         }
     };
 

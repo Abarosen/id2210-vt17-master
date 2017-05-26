@@ -54,6 +54,7 @@ public class AppMngrComp extends ComponentDefinition {
   private KAddress selfAdr;
   private OverlayId croupierId;
   private int mode;
+  private int setTestMode;
   //***************************INTERNAL_STATE*********************************
   private Component appComp;
   //our Components
@@ -77,6 +78,7 @@ public class AppMngrComp extends ComponentDefinition {
     extPorts = init.extPorts;
     croupierId = init.croupierOId;
     mode = init.mode;
+    this.setTestMode = init.setTestMode;
 
     subscribe(handleStart, control);
     subscribe(handleCroupierConnected, omngrPort);
@@ -128,12 +130,12 @@ public class AppMngrComp extends ComponentDefinition {
     connect(cb.getNegative(RBPort.class), rb.getPositive(RBPort.class), Channel.TWO_WAY);
     trigger(Start.event, cb.control());
 
+    //To only start one TestComp
     if(selfAdr.getId().toString().equals("1")) {
-      testComp = create(TestComp.class, new TestComp.Init(selfAdr, mode));
+      testComp = create(TestComp.class, new TestComp.Init(selfAdr, setTestMode));
       connect(testComp.getNegative(Network.class), extPorts.networkPort, Channel.TWO_WAY);
       trigger(Start.event, testComp.control());
     }
-
 
     /*Selection of Set to be used
     // 0 = Grow-Only Set
@@ -150,6 +152,7 @@ public class AppMngrComp extends ComponentDefinition {
     }else if(mode == 3){
       set = create(TwoP2PGraph.class, new TwoP2PGraph.Init(selfAdr));
     }
+
     if(set != null) {
       connect(set.getPositive(CRDTPort.class), appComp.getNegative(CRDTPort.class), Channel.TWO_WAY);
       connect(set.getNegative(CBPort.class), cb.getPositive(CBPort.class), Channel.TWO_WAY);
@@ -163,12 +166,14 @@ public class AppMngrComp extends ComponentDefinition {
     public final KAddress selfAdr;
     public final OverlayId croupierOId;
     public final int mode; //Used to select which set to use
+    public final int setTestMode;
 
-    public Init(ExtPort extPorts, KAddress selfAdr, OverlayId croupierOId, int mode) {
+    public Init(ExtPort extPorts, KAddress selfAdr, OverlayId croupierOId, int mode, int setTestMode) {
       this.extPorts = extPorts;
       this.selfAdr = selfAdr;
       this.croupierOId = croupierOId;
       this.mode = mode;
+      this.setTestMode = setTestMode;
     }
   }
 
