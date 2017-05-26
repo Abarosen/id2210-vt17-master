@@ -52,7 +52,7 @@ public class TwoPSet extends SuperSet{
                     }
                 }
             }catch(ClassCastException  e){
-                LOG.debug("{}Got something strange", logPrefix);
+                LOG.trace("{}Got something strange", logPrefix);
             }
         }
     };

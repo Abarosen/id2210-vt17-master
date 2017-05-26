@@ -37,7 +37,7 @@ public class GSet extends SuperSet{
                     storage.add(temp.value);
                 }
             }catch(ClassCastException  e){
-                LOG.debug("{}Got something strange", logPrefix);
+                LOG.trace("{}Got something strange", logPrefix);
             }
         }
     };
