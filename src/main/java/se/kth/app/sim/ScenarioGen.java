@@ -184,8 +184,7 @@ public class ScenarioGen {
         }
     };
 
-    static Operation<StartNodeEvent> startTestComp = new Operation<StartNodeEvent>() {
-
+    static Operation<StartNodeEvent> startTestCompOp = new Operation<StartNodeEvent>() {
         @Override
         public StartNodeEvent generate() {
             return new StartNodeEvent() {
@@ -202,12 +201,12 @@ public class ScenarioGen {
 
                 @Override
                 public Class getComponentDefinition() {
-                    return BootstrapServerComp.class;
+                    return TestComp.class;
                 }
 
                 @Override
-                public BootstrapServerComp.Init getComponentInit() {
-                    return new BootstrapServerComp.Init(selfAdr);
+                public TestComp.Init getComponentInit() {
+                    return new TestComp.Init(0);
                 }
             };
         }
@@ -256,7 +255,6 @@ public class ScenarioGen {
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
-
         return scen;
     }
 
@@ -304,7 +302,6 @@ public class ScenarioGen {
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
-
         return scen;
     }
 
@@ -408,8 +405,8 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                killPonger.startAfterTerminationOf(20000, startPeers);
-                revivePinger.startAfterTerminationOf(7000, killPonger);
+                //killPonger.startAfterTerminationOf(20000, startPeers);
+                //revivePinger.startAfterTerminationOf(7000, killPonger);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
