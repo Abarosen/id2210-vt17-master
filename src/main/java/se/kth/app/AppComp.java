@@ -206,7 +206,7 @@ public class AppComp extends ComponentDefinition {
 
     @Override
     public void handle(GraphOperations.AddE content, KContentMsg<?, ?, GraphOperations.AddE> container) {
-      LOG.trace("{}received AddEdge from {}", logPrefix, container.getHeader().getSource());
+      LOG.trace("{}received AddEdse from {}", logPrefix, container.getHeader().getSource());
       trigger(content, setPort);
     }
   };

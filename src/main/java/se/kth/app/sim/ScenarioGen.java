@@ -184,34 +184,7 @@ public class ScenarioGen {
         }
     };
 
-    static Operation<StartNodeEvent> startTestComp = new Operation<StartNodeEvent>() {
 
-        @Override
-        public StartNodeEvent generate() {
-            return new StartNodeEvent() {
-                KAddress selfAdr;
-
-                {
-                    selfAdr = ScenarioSetup.testId;
-                }
-
-                @Override
-                public Address getNodeAddress() {
-                    return selfAdr;
-                }
-
-                @Override
-                public Class getComponentDefinition() {
-                    return BootstrapServerComp.class;
-                }
-
-                @Override
-                public BootstrapServerComp.Init getComponentInit() {
-                    return new BootstrapServerComp.Init(selfAdr);
-                }
-            };
-        }
-    };
 
     public static SimulationScenario noChurn() {
         SimulationScenario scen = new SimulationScenario() {
@@ -256,7 +229,6 @@ public class ScenarioGen {
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
-
         return scen;
     }
 
@@ -304,7 +276,6 @@ public class ScenarioGen {
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
-
         return scen;
     }
 
@@ -408,8 +379,8 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                killPonger.startAfterTerminationOf(20000, startPeers);
-                revivePinger.startAfterTerminationOf(7000, killPonger);
+                //killPonger.startAfterTerminationOf(20000, startPeers);
+                //revivePinger.startAfterTerminationOf(7000, killPonger);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
