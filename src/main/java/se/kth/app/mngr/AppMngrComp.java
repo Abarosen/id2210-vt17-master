@@ -133,7 +133,6 @@ public class AppMngrComp extends ComponentDefinition {
     // 2 = Observed-Removed Set (OR-Set)
     // TODO 3 = 2P2P-Graph
     */
-    mode = 0;
     if(mode == 0){
       set = create(GSet.class, new GSet.Init(selfAdr));
     }else if(mode == 1){
