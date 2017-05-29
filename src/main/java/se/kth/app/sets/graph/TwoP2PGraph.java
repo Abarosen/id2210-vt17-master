@@ -94,7 +94,7 @@ public class TwoP2PGraph extends ComponentDefinition {
         @Override
         public void handle(GraphOperations.AddV event) {
             trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v)), cb);
-          GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
             gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
         }
     };
