@@ -141,6 +141,7 @@ public class TwoP2PGraph extends ComponentDefinition {
 
             try {
                 temp = (GraphOperations.InternalOperation) event.getContent();
+                GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
                 switch (temp.type) {
                     case Edge:
                         EA.add(temp.e);
@@ -149,6 +150,7 @@ public class TwoP2PGraph extends ComponentDefinition {
                     case Vertex:    //Add Vertex
                         VA.add(temp.v);
                         LOG.trace("{} Adding: {} ", logPrefix, temp.v);
+                        gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
                         break;
                     case RemoveE:
                         if(EA.contains(temp.e)){
@@ -161,6 +163,7 @@ public class TwoP2PGraph extends ComponentDefinition {
                             VR.add(temp.v);
                         }
                         LOG.trace("{} Removing: {}", logPrefix);
+                        gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
                         break;
                 }
             }catch(ClassCastException  e){

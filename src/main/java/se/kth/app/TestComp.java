@@ -45,6 +45,8 @@ public class TestComp extends ComponentDefinition{
             KContentMsg add = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
             KContentMsg remove = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
             KContentMsg lookup = new BasicContentMsg(header, new ExternalEvents.Lookup("Test") );
+            KContentMsg graphAdd = new BasicContentMsg(header, new GraphOperations.AddV(new Vertex("Test")));
+            KContentMsg graphRemove = new BasicContentMsg(header, new GraphOperations.RemoveV(new Vertex("Test")));
             if(testSelect == 0) {
                 //Add one message
             } else if(testSelect == 1) {
@@ -61,6 +63,9 @@ public class TestComp extends ComponentDefinition{
             } else if(testSelect == 4) {
                 trigger(add, networkPort);
                 trigger(lookup, networkPort);
+            } else if(testSelect == 5) {
+                trigger(graphAdd, networkPort);
+                trigger(graphAdd, networkPort);
             }
         }
     };

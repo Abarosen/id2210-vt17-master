@@ -82,7 +82,7 @@ public class SimulationObserver extends ComponentDefinition {
                     //gv.terminate();
                 }
             }
-            if(gv.getValue("GBEB.sentmessages", Integer.class) > 400 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+            if(gv.getValue("GBEB.sentmessages", Integer.class) > 100 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
                 LOG.warn("Amount of sent messages match the amount of received messages: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
                 //gv.terminate();
             }

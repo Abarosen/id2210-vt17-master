@@ -461,7 +461,7 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 3), new ConstantDistribution<Integer>(Integer.class, 3));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 3), new ConstantDistribution<Integer>(Integer.class, 5));
                     }
                 };
                 systemSetup.start();
