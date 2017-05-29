@@ -63,7 +63,7 @@ public class AppMngrComp extends ComponentDefinition {
   private Component cb;
   private Component set;
   private Component testComp;
-  //TODO Add Additional Components
+
 
   //******************************AUX_STATE***********************************
   private OMngrCroupier.ConnectRequest pendingCroupierConnReq;

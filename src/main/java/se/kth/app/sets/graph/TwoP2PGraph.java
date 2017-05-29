@@ -56,7 +56,7 @@ public class TwoP2PGraph extends ComponentDefinition {
     }
 
     /*
-    EXTERNAL
+     EXTERNAL
      */
 
     //Lookup
@@ -93,8 +93,8 @@ public class TwoP2PGraph extends ComponentDefinition {
     Handler handleAddV = new Handler<GraphOperations.AddV>() {
         @Override
         public void handle(GraphOperations.AddV event) {
-            trigger(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v), cb);
-            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v)), cb);
+          GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
             gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
         }
     };

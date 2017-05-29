@@ -3,6 +3,9 @@ package se.kth.app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.sets.ExternalEvents;
+import se.kth.app.sets.graph.Edge;
+import se.kth.app.sets.graph.GraphOperations;
+import se.kth.app.sets.graph.Vertex;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.network.Transport;
@@ -14,6 +17,7 @@ import se.sics.ktoolbox.util.network.basic.BasicHeader;
 
 /**
  * Created by Barosen on 2017-05-26.
+ *
  */
 public class TestComp extends ComponentDefinition{
     private static final Logger LOG = LoggerFactory.getLogger(TestComp.class);
@@ -30,6 +34,7 @@ public class TestComp extends ComponentDefinition{
 
         subscribe(handleStart, control);
         subscribe(handleResponse, networkPort);
+        subscribe(handleGResponse, networkPort);
 
     }
 
@@ -67,10 +72,16 @@ public class TestComp extends ComponentDefinition{
 
         @Override
         public void handle(ExternalEvents.Response content, KContentMsg<?, ?, ExternalEvents.Response> container) {
-            if(content.res == true) {
-                LOG.warn("I GOT IT");
-            }
-            LOG.info("{} Response received!");
+            LOG.info("{} Response received! Key: {}, Result: {}", logPrefix, content.key, content.res);
+        }
+    };
+
+    ClassMatchedHandler handleGResponse
+            = new ClassMatchedHandler<GraphOperations.Response, KContentMsg<?, ?, GraphOperations.Response>>() {
+
+        @Override
+        public void handle(GraphOperations.Response content, KContentMsg<?, ?, GraphOperations.Response> container) {
+            LOG.info("{} Response received! Key: {}, Result: {}", logPrefix, content.key, content.response);
         }
     };
 

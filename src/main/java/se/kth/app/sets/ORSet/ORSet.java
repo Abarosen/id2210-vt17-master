@@ -80,7 +80,6 @@ public class ORSet extends ComponentDefinition {
     Handler handleInternal = new Handler<CB.CB_Deliver>() {
         @Override
         public void handle(CB.CB_Deliver event) {
-
             ORSetOperations.InternalOperation temp;
             Set<UUID> tempset;
             try{
@@ -103,7 +102,6 @@ public class ORSet extends ComponentDefinition {
                     tempset = set.get(temp.value);
                     if(tempset == null)
                         return;
-                    LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
                     tempset.removeAll(temp.ids);
                     GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
                     gv.setValue("ORSet.internalremoves", gv.getValue("ORSet.internalremoves", Integer.class) + 1);

@@ -43,19 +43,17 @@ public class TwoPSet extends SuperSet{
                 temp = (SetOperations.InternalOperation) event.getContent();
                 if(temp.type.equals(SetOperations.OpType.Add)) {
                     //Add
-                    if(storage.add(temp.value)) {
-                        LOG.trace("{} adding value {}", logPrefix, temp.value);
-                        GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                    storage.add(temp.value);
+                    LOG.trace("{} adding value({}) store: {}, tombstone: {}", logPrefix, temp.value, storage, tombstones);
+                  GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
                         gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
-                    }
                 }else if(temp.type.equals(SetOperations.OpType.Remove)){
                     //Remove
                     if(storage.contains(temp.value)) {
-                        if(storage.add(temp.value)); {
-                            LOG.trace("{} removing value {}", logPrefix, temp.value);
-                            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                        tombstones.add(temp.value);
+                        LOG.trace("{} removing value({}) store: {}, tombstone: {}", logPrefix, temp.value, storage, tombstones);
+                      GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
                             gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
-                        }
                     }
                 }
             }catch(ClassCastException  e){
