@@ -26,21 +26,19 @@ import se.sics.kompics.network.Address;
 import se.sics.kompics.simulator.SimulationScenario;
 import se.sics.kompics.simulator.adaptor.Operation;
 import se.sics.kompics.simulator.adaptor.Operation1;
+import se.sics.kompics.simulator.adaptor.Operation3;
+import se.sics.kompics.simulator.adaptor.distributions.ConstantDistribution;
 import se.sics.kompics.simulator.adaptor.distributions.extra.BasicIntSequentialDistribution;
 import se.sics.kompics.simulator.events.system.KillNodeEvent;
 import se.sics.kompics.simulator.events.system.SetupEvent;
 import se.sics.kompics.simulator.events.system.StartNodeEvent;
 import se.sics.kompics.simulator.network.identifier.IdentifierExtractor;
-import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.omngr.bootstrap.BootstrapServerComp;
 import se.sics.ktoolbox.util.network.KAddress;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Alex Ormenisan <aaor@kth.se>
- */
 public class ScenarioGen {
     private static final Logger LOG = LoggerFactory.getLogger(ScenarioGen.class);
 
@@ -120,10 +118,10 @@ public class ScenarioGen {
         }
     };
 
-    static Operation1<StartNodeEvent, Integer> startNodeOp = new Operation1<StartNodeEvent, Integer>() {
+    static Operation3<StartNodeEvent, Integer, Integer, Integer> startNodeOp = new Operation3<StartNodeEvent, Integer, Integer, Integer>() {
 
         @Override
-        public StartNodeEvent generate(final Integer nodeId) {
+        public StartNodeEvent generate(final Integer nodeId, final Integer mode, final Integer setTestMode) {
             return new StartNodeEvent() {
                 KAddress selfAdr;
 
@@ -144,7 +142,7 @@ public class ScenarioGen {
 
                 @Override
                 public HostMngrComp.Init getComponentInit() {
-                    return new HostMngrComp.Init(selfAdr, ScenarioSetup.bootstrapServer, ScenarioSetup.croupierOId, 2);
+                    return new HostMngrComp.Init(selfAdr, ScenarioSetup.bootstrapServer, ScenarioSetup.croupierOId, mode, setTestMode);
                 }
 
                 @Override
@@ -159,7 +157,7 @@ public class ScenarioGen {
         }
     };
 
-    static Operation1 killPongerOp = new Operation1<KillNodeEvent, Integer>() {
+    static Operation1 killNodeOp = new Operation1<KillNodeEvent, Integer>() {
         @Override
         public KillNodeEvent generate(final Integer self) {
             return new KillNodeEvent() {
@@ -168,7 +166,7 @@ public class ScenarioGen {
                 {
                     String nodeIp = "193.0.0." + self;
                     selfAdr = ScenarioSetup.getNodeAdr(nodeIp, self);
-                    LOG.warn("Nóde {} has been killed", self);
+                    LOG.warn("Node {} has been killed", self);
                 }
 
                 @Override
@@ -209,7 +207,7 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 0), new ConstantDistribution<Integer>(Integer.class, 0));
                     }
                 };
                 //Kills an amount of nodes.
@@ -217,7 +215,7 @@ public class ScenarioGen {
                     {
                         eventInterArrivalTime(constant(0));
                         //The Second argument identifies the node to be killed
-                        raise(3, killPongerOp, new BasicIntSequentialDistribution((1)));
+                        raise(3, killNodeOp, new BasicIntSequentialDistribution((1)));
                     }
                 };
 
@@ -225,7 +223,6 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                //killPonger.startAfterTerminationOf(3000, startPeers);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
@@ -256,15 +253,15 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 0), new ConstantDistribution<Integer>(Integer.class, 0));
                     }
                 };
                 //Kills an amount of nodes.
-                StochasticProcess killPonger = new StochasticProcess() {
+                StochasticProcess killNode = new StochasticProcess() {
                     {
                         eventInterArrivalTime(constant(0));
                         //The Second argument identifies the node to be killed
-                        raise(1, killPongerOp, new BasicIntSequentialDistribution((3)));
+                        raise(1, killNodeOp, new BasicIntSequentialDistribution((3)));
                     }
                 };
 
@@ -272,7 +269,7 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                killPonger.startAfterTerminationOf(10000, startPeers);
+                killNode.startAfterTerminationOf(10000, startPeers);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
@@ -303,22 +300,22 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 0), new ConstantDistribution<Integer>(Integer.class, 0));
                     }
                 };
                 //Kills an amount of nodes.
-                StochasticProcess killPonger = new StochasticProcess() {
+                StochasticProcess killNode = new StochasticProcess() {
                     {
                         eventInterArrivalTime(constant(0));
-                        //The Second argument identifies the node to be killed
-                        raise(1, killPongerOp, new BasicIntSequentialDistribution((1)));
+                        //The third argument identifies the node to be killed
+                        raise(1, killNodeOp, new BasicIntSequentialDistribution((1)));
                     }
                 };
-                StochasticProcess revivePinger = new StochasticProcess() {
+                StochasticProcess reviveNode = new StochasticProcess() {
                     {
                         eventInterArrivalTime(constant(0));
-                        raise(1, startNodeOp, new BasicIntSequentialDistribution(1));
-                        LOG.info("Node 1 has been revived");
+                        raise(1, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 0), new ConstantDistribution<Integer>(Integer.class, 0));
+                        LOG.warn("Node 1 has been revived");
                     }
                 };
 
@@ -326,8 +323,8 @@ public class ScenarioGen {
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                killPonger.startAfterTerminationOf(20000, startPeers);
-                revivePinger.startAfterTerminationOf(7000, killPonger);
+                killNode.startAfterTerminationOf(20000, startPeers);
+                reviveNode.startAfterTerminationOf(7000, killNode);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };
@@ -357,30 +354,120 @@ public class ScenarioGen {
                 StochasticProcess startPeers = new StochasticProcess() {
                     {
                         eventInterArrivalTime(uniform(1000, 1100));
-                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1));
-                    }
-                };
-                //Kills an amount of nodes.
-                StochasticProcess killPonger = new StochasticProcess() {
-                    {
-                        eventInterArrivalTime(constant(0));
-                        //The Second argument identifies the node to be killed
-                        raise(1, killPongerOp, new BasicIntSequentialDistribution((1)));
-                    }
-                };
-                StochasticProcess revivePinger = new StochasticProcess() {
-                    {
-                        eventInterArrivalTime(constant(0));
-                        raise(1, startNodeOp, new BasicIntSequentialDistribution(1));
-                        LOG.info("Node 1 has been revived");
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 0), new ConstantDistribution<Integer>(Integer.class, 1));
                     }
                 };
                 systemSetup.start();
                 startObserver.startAfterTerminationOf(1000, systemSetup);
                 startBootstrapServer.startAfterTerminationOf(1000, startObserver);
                 startPeers.startAfterTerminationOf(1000, startBootstrapServer);
-                //killPonger.startAfterTerminationOf(20000, startPeers);
-                //revivePinger.startAfterTerminationOf(7000, killPonger);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
+        };
+        return scen;
+    }
+
+    public static SimulationScenario twoPSet() {
+        SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 1), new ConstantDistribution<Integer>(Integer.class, 2));
+                    }
+                };
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
+        };
+        return scen;
+    }
+
+    public static SimulationScenario ORSet() {
+        SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 2), new ConstantDistribution<Integer>(Integer.class, 3));
+                    }
+                };
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
+        };
+        return scen;
+    }
+    public static SimulationScenario twoP2PSet() {
+        SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 3), new ConstantDistribution<Integer>(Integer.class, 3));
+                    }
+                };
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
                 terminateAfterTerminationOf(1000*1000, startPeers);
             }
         };

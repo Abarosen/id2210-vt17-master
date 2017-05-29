@@ -10,6 +10,7 @@ import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.util.network.KAddress;
 
 
@@ -47,6 +48,8 @@ public class ORSet extends ComponentDefinition {
         @Override
         public void handle(ExternalEvents.Add event) {
             trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, UUID.randomUUID())), cb);
+            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
         }
     };
 
@@ -69,6 +72,8 @@ public class ORSet extends ComponentDefinition {
                 return;
 
             trigger(new CB.CB_Broadcast(new ORSetOperations.InternalOperation(event.value, temp)), cb);
+            GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
         }
     };
 
@@ -90,14 +95,16 @@ public class ORSet extends ComponentDefinition {
                     }else{
                         tempset.add(temp.id);
                     }
-                    LOG.trace("{} Adding value... set: {}", logPrefix, set);
+                    GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                    gv.setValue("ORSet.internaladds", gv.getValue("ORSet.internaladds", Integer.class) + 1);
                 }else if(temp.type.equals(ORSetOperations.OpType.Remove)) {
                     //Remove
                     tempset = set.get(temp.value);
                     if(tempset == null)
                         return;
                     tempset.removeAll(temp.ids);
-                    LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
+                    GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                    gv.setValue("ORSet.internalremoves", gv.getValue("ORSet.internalremoves", Integer.class) + 1);
                 }
             }catch(ClassCastException  e){
                 LOG.debug("{}Got something strange", logPrefix);

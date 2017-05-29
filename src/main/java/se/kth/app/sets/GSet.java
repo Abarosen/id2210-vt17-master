@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.broadcast.CB;
 import se.sics.kompics.*;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.util.network.KAddress;
 
 /**
@@ -35,7 +36,8 @@ public class GSet extends SuperSet{
                     //Add
                     storage.add(temp.value);
                     LOG.trace("{} Adding value:{} , Set: {}", logPrefix,temp.value, storage.toString());
-
+                    GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                    gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
                 }
             }catch(ClassCastException  e){
                 LOG.trace("{}Got something strange", logPrefix);

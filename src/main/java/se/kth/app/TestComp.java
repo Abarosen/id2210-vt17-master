@@ -23,13 +23,13 @@ public class TestComp extends ComponentDefinition{
     private static final Logger LOG = LoggerFactory.getLogger(TestComp.class);
     private String logPrefix = " ";
     private KAddress selfAdr;
-    private int mode;
+    private int testSelect;
 
     Positive<Network> networkPort = requires(Network.class);
 
     public TestComp(Init init){
         selfAdr = init.selfAdr;
-        mode = init.mode;
+        testSelect = init.testSelect;
         logPrefix = "<nid:" + selfAdr.getId() + ">";
 
         subscribe(handleStart, control);
@@ -41,31 +41,28 @@ public class TestComp extends ComponentDefinition{
     Handler handleStart = new Handler<Start>() {
         @Override
         public void handle(Start event) {
-            LOG.info("{}starting...", logPrefix);
+            LOG.info("{}starting TestComp... ", logPrefix);
+
             KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
-
-            if(mode != 3) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test"));
-                trigger(msg, networkPort);
-                //trigger(msg, networkPort);
-
-                KContentMsg msg2 = new BasicContentMsg(header, new ExternalEvents.Add("Test2"));
-                trigger(msg2, networkPort);
-
-                KContentMsg msg3 = new BasicContentMsg(header, new ExternalEvents.Remove("Test"));
-                trigger(msg3, networkPort);
-            }else{
-
-                KContentMsg msg = new BasicContentMsg(header, new GraphOperations.AddV(new Vertex("V1")));
-                trigger(msg, networkPort);
-                //trigger(msg, networkPort);
-
-                KContentMsg msg2 = new BasicContentMsg(header, new GraphOperations.AddV(new Vertex("V2")));
-                trigger(msg2, networkPort);
-
-                KContentMsg msg3 = new BasicContentMsg(header, new GraphOperations.AddE(new Edge("V1", "V2")));
-                trigger(msg3, networkPort);
-
+            KContentMsg add = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+            KContentMsg remove = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
+            KContentMsg lookup = new BasicContentMsg(header, new ExternalEvents.Lookup("Test") );
+            if(testSelect == 0) {
+                //Add one message
+            } else if(testSelect == 1) {
+                trigger(add, networkPort);
+                //Add one message and remove one message
+            } else if(testSelect == 2) {
+                trigger(add, networkPort);
+                trigger(remove, networkPort);
+                //Add two messages
+            } else if(testSelect == 3) {
+                trigger(add, networkPort);
+                trigger(add, networkPort);
+                //Add one message and do a lookup
+            } else if(testSelect == 4) {
+                trigger(add, networkPort);
+                trigger(lookup, networkPort);
             }
         }
     };
@@ -91,10 +88,10 @@ public class TestComp extends ComponentDefinition{
     public static class Init extends se.sics.kompics.Init<TestComp> {
 
         public final KAddress selfAdr;
-        int mode;
-        public Init(KAddress selfAdr, int mode) {
+        int testSelect;
+        public Init(KAddress selfAdr, int testSelect) {
             this.selfAdr = selfAdr;
-            this.mode = mode;
+            this.testSelect = testSelect;
         }
     }
 }

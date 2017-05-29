@@ -54,6 +54,7 @@ public class HostMngrComp extends ComponentDefinition {
     private KAddress bootstrapServer;
     private OverlayId croupierId;
     private int mode;
+    private int setTestMode;
     //***************************INTERNAL_STATE*********************************
     private Component bootstrapClientComp;
     private Component overlayMngrComp;
@@ -67,6 +68,7 @@ public class HostMngrComp extends ComponentDefinition {
         bootstrapServer = init.bootstrapServer;
         croupierId = init.croupierId;
         mode = init.mode;
+        this.setTestMode = init.setTestMode;
         subscribe(handleStart, control);
 
         connectBootstrapClient();
@@ -96,7 +98,7 @@ public class HostMngrComp extends ComponentDefinition {
     private void connectApp() {
         AppMngrComp.ExtPort extPorts = new AppMngrComp.ExtPort(timerPort, networkPort,
                 overlayMngrComp.getPositive(CroupierPort.class), overlayMngrComp.getNegative(OverlayViewUpdatePort.class));
-        appMngrComp = create(AppMngrComp.class, new AppMngrComp.Init(extPorts, selfAdr, croupierId, mode));
+        appMngrComp = create(AppMngrComp.class, new AppMngrComp.Init(extPorts, selfAdr, croupierId, mode, setTestMode));
         connect(appMngrComp.getNegative(OverlayMngrPort.class), overlayMngrComp.getPositive(OverlayMngrPort.class),
                 Channel.TWO_WAY);
     }
@@ -107,18 +109,21 @@ public class HostMngrComp extends ComponentDefinition {
         public final KAddress bootstrapServer;
         public final OverlayId croupierId;
         public final int mode;
+        public final int setTestMode;
 
         public Init(KAddress selfAdr, KAddress bootstrapServer, OverlayId croupierId) {
             this.selfAdr = selfAdr;
             this.bootstrapServer = bootstrapServer;
             this.croupierId = croupierId;
             this.mode = 3;
+            this.setTestMode = 0;
         }
-        public Init(KAddress selfAdr, KAddress bootstrapServer, OverlayId croupierId, int mode) {
+        public Init(KAddress selfAdr, KAddress bootstrapServer, OverlayId croupierId, int mode, int setTestMode) {
             this.selfAdr = selfAdr;
             this.bootstrapServer = bootstrapServer;
             this.croupierId = croupierId;
             this.mode = mode;
+            this.setTestMode = setTestMode;
         }
     }
 }

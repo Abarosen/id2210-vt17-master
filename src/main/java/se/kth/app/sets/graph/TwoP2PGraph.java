@@ -9,6 +9,7 @@ import se.sics.kompics.ComponentDefinition;
 import se.sics.kompics.Handler;
 import se.sics.kompics.Negative;
 import se.sics.kompics.Positive;
+import se.sics.kompics.simulator.util.GlobalView;
 import se.sics.ktoolbox.util.network.KAddress;
 
 import java.util.HashSet;
@@ -93,6 +94,8 @@ public class TwoP2PGraph extends ComponentDefinition {
         @Override
         public void handle(GraphOperations.AddV event) {
             trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v)), cb);
+          GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+            gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);
         }
     };
 
@@ -108,6 +111,8 @@ public class TwoP2PGraph extends ComponentDefinition {
                 }
                 LOG.trace("{} removing {}", logPrefix, event.v);
                 trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.RemoveV, event.v)), cb);
+                GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
+                gv.setValue("Set.receivedremoves", gv.getValue("Set.receivedremoves", Integer.class) + 1);
             }
         }
     };
