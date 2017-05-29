@@ -12,14 +12,14 @@ public class GraphOperations {
     //Add
     public static class AddV implements KompicsEvent {
         Vertex v;
-        AddV(Vertex v){
+        public AddV(Vertex v){
             this.v = v;
         }
     }
 
     public static class AddE implements KompicsEvent {
         Edge e;
-        AddE(Edge e){
+        public AddE(Edge e){
             this.e = e;
         }
     }
@@ -27,14 +27,14 @@ public class GraphOperations {
     //Remove
     public static class RemoveV implements KompicsEvent {
         Vertex v;
-        RemoveV(Vertex v){
+        public RemoveV(Vertex v){
             this.v = v;
         }
     }
 
     public static class RemoveE implements KompicsEvent {
         Edge e;
-        RemoveE(Edge e){
+        public RemoveE(Edge e){
             this.e = e;
         }
     }
@@ -46,13 +46,13 @@ public class GraphOperations {
         Vertex v;
         Edge e;
 
-        Lookup(KAddress self, Edge e){
+        public Lookup(KAddress self, Edge e){
             this.ret = self;
             this.e = e;
             type = OpType.Edge;
         }
 
-        Lookup(KAddress self, Vertex v){
+        public Lookup(KAddress self, Vertex v){
             this.ret = self;
             this.type = OpType.Vertex;
             this.v = v;
@@ -65,7 +65,7 @@ public class GraphOperations {
         public final Object key;
         public final KAddress ret;
 
-        Response(KAddress ret, Object key, boolean response){
+        public Response(KAddress ret, Object key, boolean response){
             this.response = response;
             this.key = key;
             this.ret = ret;

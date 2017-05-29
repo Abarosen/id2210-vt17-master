@@ -99,6 +99,7 @@ public class AppComp extends ComponentDefinition {
       if (croupierSample.publicSample.isEmpty()) {
         return;
       }
+
       //List<KAddress> sample = CroupierHelper.getSample(croupierSample);
       if(selfAdr.getId().toString().equals("1")){
         //LOG.info("{} TESTING! counter:{}", logPrefix, counter);

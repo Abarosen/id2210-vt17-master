@@ -75,7 +75,6 @@ public class ORSet extends ComponentDefinition {
     Handler handleInternal = new Handler<CB.CB_Deliver>() {
         @Override
         public void handle(CB.CB_Deliver event) {
-
             ORSetOperations.InternalOperation temp;
             Set<UUID> tempset;
             try{
@@ -91,13 +90,14 @@ public class ORSet extends ComponentDefinition {
                     }else{
                         tempset.add(temp.id);
                     }
+                    LOG.trace("{} Adding value... set: {}", logPrefix, set);
                 }else if(temp.type.equals(ORSetOperations.OpType.Remove)) {
                     //Remove
                     tempset = set.get(temp.value);
                     if(tempset == null)
                         return;
-                    LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
                     tempset.removeAll(temp.ids);
+                    LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
                 }
             }catch(ClassCastException  e){
                 LOG.debug("{}Got something strange", logPrefix);

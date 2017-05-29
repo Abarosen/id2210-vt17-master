@@ -55,7 +55,7 @@ public class TwoP2PGraph extends ComponentDefinition {
     }
 
     /*
-    EXTERNAL
+     EXTERNAL
      */
 
     //Lookup
@@ -92,7 +92,7 @@ public class TwoP2PGraph extends ComponentDefinition {
     Handler handleAddV = new Handler<GraphOperations.AddV>() {
         @Override
         public void handle(GraphOperations.AddV event) {
-            trigger(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v), cb);
+            trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v)), cb);
         }
     };
 
