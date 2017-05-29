@@ -40,7 +40,10 @@ public class SimLauncher {
         //SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
         //twopsetScenario.simulate(LauncherComp.class);
 
-        SimulationScenario ORSetScenario = ScenarioGen.ORSet();
-        ORSetScenario.simulate(LauncherComp.class);
+        //SimulationScenario ORSetScenario = ScenarioGen.ORSet();
+        //ORSetScenario.simulate(LauncherComp.class);
+
+        SimulationScenario twoP2PScenario = ScenarioGen.twoP2PSet();
+        twoP2PScenario.simulate(LauncherComp.class);
     }
 }

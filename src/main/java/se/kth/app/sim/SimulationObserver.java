@@ -69,6 +69,8 @@ public class SimulationObserver extends ComponentDefinition {
             LOG.info("Amount of receieved messagaes: {}", gv.getValue("GBEB.receivedmessages", Integer.class));
             LOG.info("Amount of receieved adds: {}", gv.getValue("Set.receivedadds", Integer.class));
             LOG.info("Amount of receieved remove: {}", gv.getValue("Set.receivedremoves", Integer.class));
+            LOG.info("Amount of internal ORSet adds: {}", gv.getValue("ORSet.internaladds", Integer.class));
+            LOG.info("Amount of internal ORSet removes: {}", gv.getValue("ORSet.internalremoves", Integer.class));
             if(gv.getValue("Set.receivedadds", Integer.class) == 3) {
                 LOG.warn("Received 3 adds, exiting...");
                 //gv.terminate();

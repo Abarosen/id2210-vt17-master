@@ -438,4 +438,39 @@ public class ScenarioGen {
         };
         return scen;
     }
+    public static SimulationScenario twoP2PSet() {
+        SimulationScenario scen = new SimulationScenario() {
+            {
+                StochasticProcess systemSetup = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, systemSetupOp);
+                    }
+                };
+                StochasticProcess startObserver = new StochasticProcess() {
+                    {
+                        raise(1, startObserverOp);
+                    }
+                };
+                StochasticProcess startBootstrapServer = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(constant(1000));
+                        raise(1, startBootstrapServerOp);
+                    }
+                };
+                StochasticProcess startPeers = new StochasticProcess() {
+                    {
+                        eventInterArrivalTime(uniform(1000, 1100));
+                        raise(3, startNodeOp, new BasicIntSequentialDistribution(1), new ConstantDistribution<Integer>(Integer.class, 3), new ConstantDistribution<Integer>(Integer.class, 3));
+                    }
+                };
+                systemSetup.start();
+                startObserver.startAfterTerminationOf(1000, systemSetup);
+                startBootstrapServer.startAfterTerminationOf(1000, startObserver);
+                startPeers.startAfterTerminationOf(1000, startBootstrapServer);
+                terminateAfterTerminationOf(1000*1000, startPeers);
+            }
+        };
+        return scen;
+    }
 }

@@ -97,7 +97,7 @@ public class ORSet extends ComponentDefinition {
                         tempset.add(temp.id);
                     }
                     GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
-                    gv.setValue("ORSet.internaladds", gv.getValue("Set.internaladds", Integer.class) + 1);
+                    gv.setValue("ORSet.internaladds", gv.getValue("ORSet.internaladds", Integer.class) + 1);
                 }else if(temp.type.equals(ORSetOperations.OpType.Remove)) {
                     //Remove
                     tempset = set.get(temp.value);
@@ -106,7 +106,7 @@ public class ORSet extends ComponentDefinition {
                     LOG.trace("{} removing ids({}), remaining for key: {}", logPrefix,temp.ids, set.get(temp.value));
                     tempset.removeAll(temp.ids);
                     GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
-                    gv.setValue("ORSet.internalremoves", gv.getValue("Set.internalremoves", Integer.class) + 1);
+                    gv.setValue("ORSet.internalremoves", gv.getValue("ORSet.internalremoves", Integer.class) + 1);
                 }
             }catch(ClassCastException  e){
                 LOG.debug("{}Got something strange", logPrefix);
