@@ -95,6 +95,7 @@ public class ORSet extends ComponentDefinition {
                     }else{
                         tempset.add(temp.id);
                     }
+                    LOG.trace("{} adding({}), set: {}", logPrefix, temp.value, set);
                     GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
                     gv.setValue("ORSet.internaladds", gv.getValue("ORSet.internaladds", Integer.class) + 1);
                 }else if(temp.type.equals(ORSetOperations.OpType.Remove)) {

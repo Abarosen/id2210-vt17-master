@@ -68,7 +68,7 @@ public class HostMngrComp extends ComponentDefinition {
         bootstrapServer = init.bootstrapServer;
         croupierId = init.croupierId;
         mode = init.mode;
-        this.setTestMode = init.setTestMode;
+        setTestMode = init.setTestMode;
         subscribe(handleStart, control);
 
         connectBootstrapClient();

@@ -63,7 +63,7 @@ public class TwoP2PGraph extends ComponentDefinition {
     Handler handleLookup = new Handler<GraphOperations.Lookup>() {
         @Override
         public void handle(GraphOperations.Lookup event) {
-            boolean result = false;
+            boolean result;
             Object retKey;
             if(event.type.equals(GraphOperations.OpType.Edge)){
                 retKey = event.e;
@@ -84,7 +84,7 @@ public class TwoP2PGraph extends ComponentDefinition {
         @Override
         public void handle(GraphOperations.AddE event) {
             if(VA.contains(event.e.v1) && !VR.contains(event.e.v1) && VA.contains(event.e.v2) && !VR.contains(event.e.v2)){
-                LOG.trace("{} External add: {}", logPrefix, event.e);
+                LOG.trace("{} External add Edge: {}", logPrefix, event.e);
                 trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Edge, event.e)), cb);
             }
         }
@@ -93,6 +93,7 @@ public class TwoP2PGraph extends ComponentDefinition {
     Handler handleAddV = new Handler<GraphOperations.AddV>() {
         @Override
         public void handle(GraphOperations.AddV event) {
+            LOG.trace("{} External add Vertex: {}", logPrefix, event.v);
             trigger(new CB.CB_Broadcast(new GraphOperations.InternalOperation(GraphOperations.OpType.Vertex, event.v)), cb);
             GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
             gv.setValue("Set.receivedadds", gv.getValue("Set.receivedadds", Integer.class) + 1);

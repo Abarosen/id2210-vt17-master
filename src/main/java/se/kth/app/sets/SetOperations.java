@@ -13,7 +13,7 @@ public class SetOperations {
     /**************************************************/
 
 
-
+    //Only used internally by sets
     static class InternalOperation implements KompicsEvent{
         String value;
         OpType type;

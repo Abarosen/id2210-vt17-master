@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.sics.kompics.*;
 import se.sics.ktoolbox.util.network.KAddress;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,8 +30,8 @@ public class CB extends ComponentDefinition {
 
         selfAdr = init.selfAdr;
         logPrefix = "<nid:" + selfAdr.getId() + ">";
-        delivered = new LinkedList<KompicsEvent>();
-        past = new LinkedList<Tuple>();
+        delivered = new LinkedList<>();
+        past = new LinkedList<>();
 
         LOG.info("{} starting CB", logPrefix);
 
@@ -57,7 +56,6 @@ public class CB extends ComponentDefinition {
                 return false;
             }
             Tuple other = (Tuple) obj;
-
             return this.event.equals(other.event);
         }
 

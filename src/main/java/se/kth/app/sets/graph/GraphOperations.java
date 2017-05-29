@@ -77,7 +77,7 @@ public class GraphOperations {
     /********************Internal**********************/
     /**************************************************/
 
-
+    //Only used internally by TwoP2PGraph
     static class InternalOperation implements KompicsEvent{
         Vertex v;
         Edge e;

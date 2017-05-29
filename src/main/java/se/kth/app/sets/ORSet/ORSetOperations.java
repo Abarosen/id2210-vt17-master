@@ -17,7 +17,7 @@ public class ORSetOperations {
     /********************Internal**********************/
     /**************************************************/
 
-    //Add
+    //Only used internally by ORSet components
     static class InternalOperation implements KompicsEvent{
         String value;
         UUID id;
