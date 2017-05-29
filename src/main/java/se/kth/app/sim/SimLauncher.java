@@ -25,8 +25,8 @@ import se.sics.kompics.simulator.run.LauncherComp;
 public class SimLauncher {
     public static void main(String[] args) {
         SimulationScenario.setSeed(ScenarioSetup.scenarioSeed);
-        //SimulationScenario simpleBootScenario = ScenarioGen.simpleBoot();
-        //simpleBootScenario.simulate(LauncherComp.class);
+        SimulationScenario broadcastScenario = ScenarioGen.noChurn();
+        broadcastScenario.simulate(LauncherComp.class);
 
         //SimulationScenario churnBootScensario = ScenarioGen.churn();
         //churnBootScensario.simulate(LauncherComp.class);
@@ -43,7 +43,7 @@ public class SimLauncher {
         //SimulationScenario ORSetScenario = ScenarioGen.ORSet();
         //ORSetScenario.simulate(LauncherComp.class);
 
-        SimulationScenario twoP2PScenario = ScenarioGen.twoP2PSet();
-        twoP2PScenario.simulate(LauncherComp.class);
+        //SimulationScenario twoP2PScenario = ScenarioGen.twoP2PSet();
+        //twoP2PScenario.simulate(LauncherComp.class);
     }
 }
