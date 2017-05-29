@@ -28,22 +28,22 @@ public class SimLauncher {
         SimulationScenario broadcastScenario = ScenarioGen.noChurn();
         broadcastScenario.simulate(LauncherComp.class);
 
-        //SimulationScenario churnBootScensario = ScenarioGen.churn();
-        //churnBootScensario.simulate(LauncherComp.class);
+        SimulationScenario churnBootScensario = ScenarioGen.churn();
+        churnBootScensario.simulate(LauncherComp.class);
 
-        //SimulationScenario churnReviveScenario = ScenarioGen.churnRevive();
-        //churnReviveScenario.simulate(LauncherComp.class);
+        SimulationScenario churnReviveScenario = ScenarioGen.churnRevive();
+        churnReviveScenario.simulate(LauncherComp.class);
 
-        //SimulationScenario gsetScenario = ScenarioGen.gset();
-        //gsetScenario.simulate(LauncherComp.class);
+        SimulationScenario gsetScenario = ScenarioGen.gset();
+        gsetScenario.simulate(LauncherComp.class);
 
-        //SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
-        //twopsetScenario.simulate(LauncherComp.class);
+        SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
+        twopsetScenario.simulate(LauncherComp.class);
 
-        //SimulationScenario ORSetScenario = ScenarioGen.ORSet();
-        //ORSetScenario.simulate(LauncherComp.class);
+        SimulationScenario ORSetScenario = ScenarioGen.ORSet();
+        ORSetScenario.simulate(LauncherComp.class);
 
-        //SimulationScenario twoP2PScenario = ScenarioGen.twoP2PSet();
-        //twoP2PScenario.simulate(LauncherComp.class);
+        SimulationScenario twoP2PScenario = ScenarioGen.twoP2PSet();
+        twoP2PScenario.simulate(LauncherComp.class);
     }
 }

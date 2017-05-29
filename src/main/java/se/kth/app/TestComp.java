@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.app.sets.ExternalEvents;
 import se.kth.app.sets.graph.GraphOperations;
+import se.kth.app.sets.graph.Vertex;
 import se.sics.kompics.*;
 import se.sics.kompics.network.Network;
 import se.sics.kompics.network.Transport;
