@@ -17,13 +17,11 @@
  */
 package se.kth.app.sim;
 
+import se.kth.app.sets.ORSet.ORSet;
 import se.sics.kompics.network.test.NetworkTest;
 import se.sics.kompics.simulator.SimulationScenario;
 import se.sics.kompics.simulator.run.LauncherComp;
 
-/**
- * @author Alex Ormenisan <aaor@kth.se>
- */
 public class SimLauncher {
     public static void main(String[] args) {
         SimulationScenario.setSeed(ScenarioSetup.scenarioSeed);
@@ -33,13 +31,16 @@ public class SimLauncher {
         //SimulationScenario churnBootScensario = ScenarioGen.churn();
         //churnBootScensario.simulate(LauncherComp.class);
 
-        //SimulationScenario churnBootScensario = ScenarioGen.churnRevive();
-        //churnBootScensario.simulate(LauncherComp.class);
+        //SimulationScenario churnReviveScenario = ScenarioGen.churnRevive();
+        //churnReviveScenario.simulate(LauncherComp.class);
 
         //SimulationScenario gsetScenario = ScenarioGen.gset();
         //gsetScenario.simulate(LauncherComp.class);
 
-        SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
-        twopsetScenario.simulate(LauncherComp.class);
+        //SimulationScenario twopsetScenario = ScenarioGen.twoPSet();
+        //twopsetScenario.simulate(LauncherComp.class);
+
+        SimulationScenario ORSetScenario = ScenarioGen.ORSet();
+        ORSetScenario.simulate(LauncherComp.class);
     }
 }

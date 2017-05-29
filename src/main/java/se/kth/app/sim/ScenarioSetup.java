@@ -29,9 +29,6 @@ import se.sics.ktoolbox.util.network.nat.NatAwareAddressImpl;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/**
- * @author Alex Ormenisan <aaor@kth.se>
- */
 public class ScenarioSetup {
 
   public static final long scenarioSeed = 1234;
@@ -39,6 +36,7 @@ public class ScenarioSetup {
   public static final KAddress bootstrapServer;
   public static final KAddress observer;
   public static final OverlayId croupierOId;
+  //Identifier of the test component
   public static final KAddress testId;
 
   static {

@@ -19,13 +19,13 @@ public class TestComp extends ComponentDefinition{
     private static final Logger LOG = LoggerFactory.getLogger(TestComp.class);
     private String logPrefix = " ";
     private KAddress selfAdr;
-    private int mode;
+    private int testSelect;
 
     Positive<Network> networkPort = requires(Network.class);
 
     public TestComp(Init init){
         selfAdr = init.selfAdr;
-        mode = init.mode;
+        testSelect = init.testSelect;
         logPrefix = "<nid:" + selfAdr.getId() + ">";
 
         subscribe(handleStart, control);
@@ -39,36 +39,25 @@ public class TestComp extends ComponentDefinition{
             LOG.info("{}starting TestComp... ", logPrefix);
 
             KHeader header = new BasicHeader(selfAdr, selfAdr, Transport.UDP);
-            if(mode == 0) {
-
-            } else if(mode == 1) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                trigger(msg, networkPort);
-            } else if(mode == 2) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
-                trigger(msg, networkPort);
-                trigger(removeMsg, networkPort);
-            } else if(mode == 3) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                KContentMsg addMsg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                trigger(msg, networkPort);
-                trigger(addMsg, networkPort);
-            } else if(mode == 4) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                trigger(msg, networkPort);
-                KContentMsg lookup = new BasicContentMsg(header, new ExternalEvents.Lookup("Test") );
+            KContentMsg add = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
+            KContentMsg remove = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
+            KContentMsg lookup = new BasicContentMsg(header, new ExternalEvents.Lookup("Test") );
+            if(testSelect == 0) {
+                //Add one message
+            } else if(testSelect == 1) {
+                trigger(add, networkPort);
+                //Add one message and remove one message
+            } else if(testSelect == 2) {
+                trigger(add, networkPort);
+                trigger(remove, networkPort);
+                //Add two messages
+            } else if(testSelect == 3) {
+                trigger(add, networkPort);
+                trigger(add, networkPort);
+                //Add one message and do a lookup
+            } else if(testSelect == 4) {
+                trigger(add, networkPort);
                 trigger(lookup, networkPort);
-            } else if(mode == 5) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
-                trigger(msg, networkPort);
-                trigger(removeMsg, networkPort);
-            } else if(mode == 6) {
-                KContentMsg msg = new BasicContentMsg(header, new ExternalEvents.Add("Test") );
-                KContentMsg removeMsg = new BasicContentMsg(header, new ExternalEvents.Remove("Test") );
-                trigger(msg, networkPort);
-                trigger(removeMsg, networkPort);
             }
         }
     };
@@ -88,11 +77,10 @@ public class TestComp extends ComponentDefinition{
     public static class Init extends se.sics.kompics.Init<TestComp> {
 
         public final KAddress selfAdr;
-        int mode;
-        int setTestMode;
-        public Init(KAddress selfAdr, int mode) {
+        int testSelect;
+        public Init(KAddress selfAdr, int testSelect) {
             this.selfAdr = selfAdr;
-            this.mode = mode;
+            this.testSelect = testSelect;
         }
     }
 }

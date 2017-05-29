@@ -22,7 +22,7 @@ public class SimulationObserver extends ComponentDefinition {
     Positive<Timer> timer = requires(Timer.class);
     Positive<Network> network = requires(Network.class);
 
-    private final int minPings;
+    private final int minMessages;
     private final int minDeadNodes;
     private int timeouts = 0;
 
@@ -30,7 +30,7 @@ public class SimulationObserver extends ComponentDefinition {
     GlobalView gv = config().getValue("simulation.globalview", GlobalView.class);
 
     public SimulationObserver(Init init) {
-        minPings = init.minPings;
+        minMessages = init.minMessages;
         minDeadNodes = init.minDeadNodes;
 
         subscribe(handleStart, control);
@@ -42,9 +42,9 @@ public class SimulationObserver extends ComponentDefinition {
         gv.setValue("GBEB.receivedmessages", 0);
         gv.setValue("Set.receivedadds", 0);
         gv.setValue("Set.receivedremoves", 0);
-        gv.setValue("text", "cpbarn");
+        gv.setValue("ORSet.internaladds", 0);
+        gv.setValue("ORSet.internalremoves", 0);
         LOG.info("simtext: {} ", gv.getValue("text", GlobalView.class));
-
         LOG.info("Starting Observer!");
     }
 
@@ -69,30 +69,32 @@ public class SimulationObserver extends ComponentDefinition {
             LOG.info("Amount of receieved messagaes: {}", gv.getValue("GBEB.receivedmessages", Integer.class));
             LOG.info("Amount of receieved adds: {}", gv.getValue("Set.receivedadds", Integer.class));
             LOG.info("Amount of receieved remove: {}", gv.getValue("Set.receivedremoves", Integer.class));
-            /*if(gv.getValue("Set.receivedadds", Integer.class) == 3) {
+            if(gv.getValue("Set.receivedadds", Integer.class) == 3) {
                 LOG.warn("Received 3 adds, exiting...");
-                gv.terminate();
-            }*/
-            /*if(gv.getValue("Set.receivedremoves", Integer.class) == 3) {
-                LOG.warn("Received 3 removes");
+                //gv.terminate();
+            }
+            if(gv.getValue("Set.receivedremoves", Integer.class) == 3) {
+                LOG.info("Received 3 removes");
                 if(gv.getValue("Set.receivedadds", Integer.class) == gv.getValue("Set.receivedremoves", Integer.class)) {
                     LOG.warn("Received 3 adds and 3 removes, exiting...");
-                    gv.terminate();
+                    //gv.terminate();
                 }
-            }*/
-            if(gv.getValue("GBEB.sentmessages", Integer.class) > 400 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
-                //LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
-                LOG.warn("Amount of sent messages match the amount of received messages: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
-                gv.terminate();
             }
-            /*if(gv.getValue("GBEB.sentmessages", Integer.class) > 10 && gv.getValue("GBEB.samplesize", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+            if(gv.getValue("GBEB.sentmessages", Integer.class) > 400 && gv.getValue("GBEB.receivedmessages", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
+                LOG.warn("Amount of sent messages match the amount of received messages: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
+                //gv.terminate();
+            }
+            if(gv.getValue("GBEB.sentmessages", Integer.class) > 10 && gv.getValue("GBEB.samplesize", Integer.class) == gv.getValue("GBEB.sentmessages", Integer.class)) {
                 //LOG.info("Terminating simulation as the minimum pings:{} is achieved", minPings);
                 LOG.warn("Amount of sent messages match the sample size: {}, {}", gv.getValue("GBEB.samplesize", Integer.class), gv.getValue("GBEB.sentmessages", Integer.class));
-                gv.terminate();
-            }*/
+                //gv.terminate();
+            }
+            if(gv.getValue("ORSet.internaladds", Integer.class) >= 3 && gv.getValue("ORSet.internaladds", Integer.class) == gv.getValue("ORSet.internalremoves", Integer.class)) {
+                LOG.warn("Amount of internal adds match the amount of internal removes: {}, {}", gv.getValue("ORSet.internaladds", Integer.class), gv.getValue("ORSet.internalremoves", Integer.class));
+            }
             if(gv.getDeadNodes().size() > minDeadNodes) {
                 LOG.warn("Terminating simulation as the min dead nodes:{} is achieved", minDeadNodes);
-                gv.terminate();
+                //gv.terminate();
             }
             if(++timeouts == 300) {
                 LOG.warn("Taking too long to terminate simulation, terminating");
@@ -103,11 +105,11 @@ public class SimulationObserver extends ComponentDefinition {
 
     public static class Init extends se.sics.kompics.Init<SimulationObserver> {
 
-        public final int minPings;
+        public final int minMessages;
         public final int minDeadNodes;
 
-        public Init(int minPings, int minDeadNodes) {
-            this.minPings = minPings;
+        public Init(int minMessages, int minDeadNodes) {
+            this.minMessages = minMessages;
             this.minDeadNodes = minDeadNodes;
         }
     }
